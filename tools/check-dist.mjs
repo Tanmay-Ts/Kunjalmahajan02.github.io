@@ -30,6 +30,8 @@ for (const f of [
   'favicon.png',
   'apple-touch-icon.png',
   'og-image.png',
+  'world/islands.webp',
+  'world/library.webp',
   'resume/Kunjal_Mahajan_Resume.pdf',
   'art/creative-dance-640.webp',
   'art/creative-art-640.webp',

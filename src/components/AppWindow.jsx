@@ -1,55 +1,37 @@
 import { useEffect, useRef } from 'react';
 import { go, href } from '../router.js';
-
-// A retro desktop window floating over the dollhouse. Escape, the close
-// button or a click on the backdrop take you back home.
+import { isReducedMotion } from '../motion.js';
+import WorldIcon from './WorldIcon.jsx';
+// A reading drawer in the landscape. Navigation stays available while reading.
 export default function AppWindow({ file, title, crumb, back, tone = 'pink', children }) {
   const titleRef = useRef(null);
   const bodyRef = useRef(null);
-
+  const sectionName = { 'PROJECTS.EXE': 'Projects', 'RESEARCH.TXT': 'Research', 'CREATIVE.EXE': 'Creative', 'CONTACT.ME': 'Contact', 'RESUME.PDF': 'Résumé' }[file] || 'Explore';
   useEffect(() => {
-    titleRef.current?.focus({ preventScroll: true });
     bodyRef.current?.scrollTo(0, 0);
+    const timer = window.setTimeout(() => titleRef.current?.focus({ preventScroll: true }), isReducedMotion() ? 0 : 950);
+    const cancelFocus = () => clearTimeout(timer);
     const onKey = (e) => {
-      if (e.key === 'Escape') go('');
+      if (e.key === 'Tab') cancelFocus();
+      if (e.key === 'Escape') { cancelFocus(); e.preventDefault(); go(''); }
     };
     document.addEventListener('keydown', onKey);
-    document.body.classList.add('has-window');
-    return () => {
-      document.removeEventListener('keydown', onKey);
-      document.body.classList.remove('has-window');
-    };
+    document.addEventListener('pointerdown', cancelFocus);
+    document.addEventListener('focusin', cancelFocus);
+    return () => { clearTimeout(timer); document.removeEventListener('keydown', onKey); document.removeEventListener('pointerdown', cancelFocus); document.removeEventListener('focusin', cancelFocus); };
   }, [file, crumb]);
-
-  return (
-    <div className="window-layer" onMouseDown={(e) => e.target === e.currentTarget && go('')}>
-      <section className={`window window--${tone}`} role="dialog" aria-modal="true" aria-labelledby="page-title">
-        <header className="window__bar">
-          <span className="window__dots" aria-hidden="true">
-            <i />
-            <i />
-            <i />
-          </span>
-          <p className="window__file display">
-            {file}
-            {crumb && <span> / {crumb}</span>}
-          </p>
-          <a className="window__close" href={href('')} aria-label="Close window and go back to the house">
-            ×
-          </a>
-        </header>
-        <div className="window__body" ref={bodyRef}>
-          {back && (
-            <a className="window__back" href={href(back.to)}>
-              ← {back.label}
-            </a>
-          )}
-          <h1 id="page-title" className="window__title" tabIndex={-1} ref={titleRef}>
-            {title}
-          </h1>
-          {children}
-        </div>
-      </section>
+  return <section className={'window-layer' + (crumb ? ' window-layer--detail' : '')} aria-labelledby="page-title">
+    <div className={'window window--' + tone}>
+      <header className="window__bar">
+        <nav className="drawer-crumb" aria-label="Breadcrumb"><WorldIcon size={14} /><a href={href('')}>World</a><span aria-hidden="true">/</span><span>{sectionName}</span>{crumb && <><span aria-hidden="true">/</span><span className="drawer-crumb__detail">{crumb}</span></>}</nav>
+        <span className="drawer-ornament" aria-hidden="true"><i /><WorldIcon size={14} /><i /></span>
+        <a className="window__close" href={href('')} aria-label="Close contents and return to world">×</a>
+      </header>
+      <div className="window__body" ref={bodyRef}>
+        {back && <a className="window__back" href={href(back.to)}><WorldIcon name="back" size={16} /> {back.label}</a>}
+        <h1 id="page-title" className="window__title" tabIndex={-1} ref={titleRef}>{title}</h1>
+        {children}
+      </div>
     </div>
-  );
+  </section>;
 }

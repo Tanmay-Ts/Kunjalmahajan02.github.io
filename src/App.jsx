@@ -1,30 +1,16 @@
 import { useEffect, useRef } from 'react';
-import { go, href, useDocumentTitle, useRoute } from './router.js';
+import { href, useDocumentTitle, useRoute } from './router.js';
 import { projectById } from './data/projects.js';
 import { topicById } from './data/research.js';
 import TopBar from './components/TopBar.jsx';
-import Panel from './components/Panel.jsx';
-import Dollhouse from './components/Dollhouse.jsx';
+import IslandWorld from './components/IslandWorld.jsx';
 import AppWindow from './components/AppWindow.jsx';
 import ProjectsApp from './windows/ProjectsApp.jsx';
 import ResearchApp from './windows/ResearchApp.jsx';
 import CreativeApp from './windows/CreativeApp.jsx';
 import ContactApp from './windows/ContactApp.jsx';
 import ResumeApp from './windows/ResumeApp.jsx';
-
-// Addresses from earlier versions of the site keep working.
-const ALIASES = {
-  universe: '',
-  lab: 'projects',
-  inventor: 'projects',
-  archive: 'projects',
-  observatory: 'research',
-  garden: 'research',
-  system: 'research',
-  daydream: 'creative',
-  about: 'contact',
-};
-
+const ALIASES = { universe: '', lab: 'projects', inventor: 'projects', archive: 'projects', observatory: 'research', garden: 'research', system: 'research', daydream: 'creative', about: 'contact' };
 function resolve([section, sub, third]) {
   if (section === 'research' && sub === 'map') return ['research', third];
   if (section in ALIASES) {
@@ -34,84 +20,45 @@ function resolve([section, sub, third]) {
   }
   return [section, sub];
 }
-
 function windowFor([section, sub]) {
   switch (section) {
-    case undefined:
-      return null;
-    case 'projects':
-      if (sub && !projectById[sub]) return <NotFound />;
-      return <ProjectsApp project={projectById[sub]} />;
-    case 'research':
-      if (sub && !topicById[sub]) return <NotFound />;
-      return <ResearchApp topicId={sub} />;
-    case 'creative':
-      return <CreativeApp />;
-    case 'contact':
-      return <ContactApp />;
-    case 'resume':
-      return <ResumeApp />;
-    default:
-      return <NotFound />;
+    case undefined: return null;
+    case 'projects': return sub && !projectById[sub] ? <NotFound /> : <ProjectsApp project={projectById[sub]} />;
+    case 'research': return sub && !topicById[sub] ? <NotFound /> : <ResearchApp topicId={sub} />;
+    case 'creative': return <CreativeApp />;
+    case 'contact': return <ContactApp />;
+    case 'resume': return <ResumeApp />;
+    default: return <NotFound />;
   }
 }
-
 function NotFound() {
   useDocumentTitle('Not found');
-  return (
-    <AppWindow file="ERROR.TXT" title="This room doesn’t exist (yet)" tone="lilac">
-      <p className="window__lead">The link may be old or mistyped. Mini Kunjal checked every room ♡</p>
-      <a className="btn" href={href('')}>
-        Back to the house
-      </a>
-    </AppWindow>
-  );
+  return <AppWindow file="ERROR.TXT" title="An undiscovered corner" tone="lilac"><p className="window__lead">This path hasn’t been mapped. Choose another island to keep exploring.</p><a className="btn" href={href('')}>Back to the world</a></AppWindow>;
 }
-
 export default function App() {
   const raw = useRoute();
   const route = resolve(raw);
   const [section] = route;
   const win = windowFor(route);
-
   useEffect(() => {
-    if (raw[0] in ALIASES || (raw[0] === 'research' && raw[1] === 'map')) {
-      window.history.replaceState(null, '', href(route.filter(Boolean).join('/')));
-    }
+    if (raw[0] in ALIASES || (raw[0] === 'research' && raw[1] === 'map')) window.history.replaceState(null, '', href(route.filter(Boolean).join('/')));
   }, [raw, route]);
-
-  // closing a window restores the title and hands focus back to the house
-  const prevSection = useRef(section);
+  const previousSection = useRef(section);
   useEffect(() => {
-    const closed = prevSection.current && !section;
-    prevSection.current = section;
+    const previous = previousSection.current;
+    previousSection.current = section;
     if (section) return;
-    document.title = 'Kunjal.exe — Her Little Universe';
-    if (closed) document.getElementById('dollhouse-title')?.focus({ preventScroll: true });
+    document.title = 'Kunjal — A Little World of Curiosity';
+    if (previous) (document.getElementById('island-' + previous) || document.getElementById('world-title'))?.focus({ preventScroll: true });
   }, [section]);
-
   const skipToContent = (e) => {
     e.preventDefault();
-    (document.getElementById('page-title') ?? document.getElementById('main'))?.focus();
+    (document.getElementById('page-title') ?? document.getElementById('world-title') ?? document.getElementById('main'))?.focus();
   };
-
-  return (
-    <>
-      <a className="skip-link" href="#main" onClick={skipToContent}>
-        Skip to content
-      </a>
-      <TopBar current={section} />
-      <main id="main" tabIndex={-1} className="desk" inert={win ? '' : undefined} aria-hidden={win ? true : undefined}>
-        <Panel />
-        <Dollhouse onOpen={(to) => go(to)} />
-      </main>
-      <footer className="foot">
-        <p>
-          Every room drawn in code · <span className="hand">made with ♡ in Thane, Mumbai</span> · ©{' '}
-          {new Date().getFullYear()} Kunjal Mahajan
-        </p>
-      </footer>
-      {win}
-    </>
-  );
+  return <div className="universe-app" data-section={section || 'world'}>
+    <a className="skip-link" href="#main" onClick={skipToContent}>Skip to content</a>
+    <TopBar current={section} />
+    <main id="main" tabIndex={-1} className="world-main"><IslandWorld section={section} />{win}</main>
+    <footer className="world-footer"><span>A LITTLE WORLD, A LOT TO EXPLORE</span><span>Made with curiosity in Thane, Mumbai <span aria-hidden="true">✧</span></span></footer>
+  </div>;
 }
