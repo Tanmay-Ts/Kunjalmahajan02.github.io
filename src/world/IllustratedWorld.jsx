@@ -1,13 +1,11 @@
-﻿import { useEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 import { useMotion } from '../motion.js';
-import WorldAtmosphere from '../components/WorldAtmosphere.jsx';
+import SanctuaryAtmosphere from '../components/SanctuaryAtmosphere.jsx';
+import { sanctuaryDestinationById } from './sanctuaryDestinations.js';
 
-const IMAGE_URL = import.meta.env.BASE_URL + 'world/sunset-world-hd.webp';
-const DESTINATIONS = {
-  research: { focus: [0.35, 0.51], label: [0.31, 0.45] },
-  projects: { focus: [0.61, 0.35], label: [0.61, 0.25] },
-  creative: { focus: [0.86, 0.39], label: [0.87, 0.31] },
-};
+const IMAGE_URL = import.meta.env.BASE_URL + 'world/sanctuary-hd.webp';
+const DESTINATIONS = sanctuaryDestinationById;
+const COMPACT = '(max-width: 760px), (max-aspect-ratio: 5/4)';
 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 const ease = (value) => value * value * value * (value * (value * 6 - 15) + 10);
 const interpolate = (from, to, amount) => ({
@@ -74,11 +72,12 @@ export default function IllustratedWorld({ section, onTravelState, onProjection,
       if (!layout || !current) return;
       const projected = {};
       for (const [id, destination] of Object.entries(DESTINATIONS)) {
-        const anchorX = current.x + destination.label[0] * layout.imageWidth * current.scale;
+        const anchor = layout.portrait ? destination.mobileLabel : destination.label;
+        const anchorX = current.x + anchor[0] * layout.imageWidth * current.scale;
         const labelPadding = Math.min(57, layout.width / 2);
         const x = layout.portrait ? clamp(anchorX, labelPadding, layout.width - labelPadding) : anchorX;
-        const y = current.y + destination.label[1] * layout.imageHeight * current.scale;
-        projected[id] = { x, y, visible: anchorX > 12 && anchorX < layout.width - 12 && y > 12 && y < layout.height - 12 };
+        const y = current.y + anchor[1] * layout.imageHeight * current.scale;
+        projected[id] = { x, y, mode: layout.portrait ? destination.mobileMode : destination.mode, visible: anchorX > 6 && anchorX < layout.width - 6 && y > 6 && y < layout.height - 6 };
       }
       latest.current.onProjection?.(projected);
     };
@@ -88,13 +87,14 @@ export default function IllustratedWorld({ section, onTravelState, onProjection,
       scale: 1,
     });
     const targetTransform = (id) => {
-      const destination = DESTINATIONS[id];
+      const destination = DESTINATIONS[id === 'resume' ? 'contact' : id];
       if (!destination) return homeTransform();
-      const scale = layout.zoomLimit;
+      const scale = Math.min(layout.zoomLimit, layout.portrait ? 3 : destination.zoom);
       const width = layout.imageWidth * scale;
       const height = layout.imageHeight * scale;
-      let x = layout.width * 0.5 - destination.focus[0] * width;
-      let y = layout.height * 0.3 - destination.focus[1] * height;
+      const arrival = layout.portrait ? [0.5, 0.28] : destination.arrival;
+      let x = layout.width * arrival[0] - destination.focus[0] * width;
+      let y = layout.height * arrival[1] - destination.focus[1] * height;
       // Keep image boundaries outside the viewport whenever its pixel budget
       // allows it. A contained portrait composition may retain sky around it.
       if (width >= layout.width) x = clamp(x, layout.width - width, 0);
@@ -147,29 +147,32 @@ export default function IllustratedWorld({ section, onTravelState, onProjection,
       if (!ready || failed || disposed) return;
       const width = Math.max(1, mount.clientWidth);
       const height = Math.max(1, mount.clientHeight);
+      const bounds = mount.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
       if (layout && width === layout.width && height === layout.height && dpr === layout.dpr) return;
-      const portrait = width <= 700;
-      const fit = portrait
-        ? Math.min(width / image.naturalWidth, height / image.naturalHeight)
-        : Math.max(width / image.naturalWidth, height / image.naturalHeight);
+      const portrait = window.matchMedia(COMPACT).matches;
+      const fit = Math.max(width / image.naturalWidth, height / image.naturalHeight);
       const imageWidth = image.naturalWidth * fit;
       const imageHeight = image.naturalHeight * fit;
       const pixelBudget = image.naturalWidth / (imageWidth * dpr);
-      const zoomLimit = Math.max(1, Math.min(portrait ? 3 : 2.2, pixelBudget));
+      const zoomLimit = Math.max(1, Math.min(3, pixelBudget));
       const previousLayout = layout;
-      layout = { width, height, imageWidth, imageHeight, dpr, portrait, pixelBudget, zoomLimit };
-      mount.dataset.imageFit = portrait ? 'contain' : 'cover';
+      layout = { width, height, imageWidth, imageHeight, dpr, portrait, pixelBudget, zoomLimit, left: bounds.left, top: bounds.top };
+      mount.dataset.imageFit = 'cover';
       if (!current) {
         current = homeTransform();
         applyTransform();
         projectLabels();
-      } else if (flight) {
-        const remaining = Math.max(160, flight.duration - (performance.now() - flight.started));
+      } else if (flight || latest.current.section !== currentSection) {
+        const remaining = flight ? Math.max(160, flight.duration - (performance.now() - flight.started)) : 1600;
+        wantedSection = latest.current.section;
         current = {
-          x: current.x * width / previousLayout.width,
-          y: current.y * height / previousLayout.height,
-          scale: Math.min(current.scale, zoomLimit),
+          x: previousLayout.left + current.x - bounds.left,
+          y: previousLayout.top + current.y - bounds.top,
+          // A full-screen close-up needs a larger temporary scale inside the
+          // small returning frame. Preserve those native pixels until it eases
+          // back to the normal target, rather than snapping to the UI zoom cap.
+          scale: Math.min(previousLayout.imageWidth * current.scale / imageWidth, pixelBudget),
         };
         applyTransform();
         beginTravel(wantedSection, remaining);
@@ -192,14 +195,16 @@ export default function IllustratedWorld({ section, onTravelState, onProjection,
       reportTravel(latest.current.section, 'arrived');
     };
     const loaded = async () => {
-      if (disposed || failed || ready || decoding || !image.naturalWidth) return;
+      if (disposed || ready || decoding || !image.naturalWidth) return;
+      const recovering = failed;
       decoding = true;
       // Waiting for decoded pixels prevents an empty or low-detail first frame
       // from being reported as a completed entrance on cached/direct links.
       try { await image.decode?.(); } catch { /* A successful load can outlive a cancelled decode. */ }
-      if (disposed || failed) return;
+      if (disposed) return;
       if (!image.naturalWidth || !image.naturalHeight) { unavailable(); return; }
       clearTimeout(loadTimeout);
+      failed = false;
       ready = true;
       mount.dataset.imageWidth = String(image.naturalWidth);
       mount.dataset.imageHeight = String(image.naturalHeight);
@@ -207,7 +212,14 @@ export default function IllustratedWorld({ section, onTravelState, onProjection,
       measure();
       camera.style.visibility = 'visible';
       latest.current.onUnavailable?.(false);
-      request(latest.current.section);
+      if (recovering) {
+        // A slow download may finish after fallback navigation was used. Restore
+        // the view without replaying a journey underneath already-open content.
+        wantedSection = latest.current.section;
+        current = targetTransform(wantedSection);
+        applyTransform();
+        arrive(wantedSection);
+      } else request(latest.current.section);
     };
     const onMotionChange = () => {
       if (flight && latest.current.motion === 'reduced') {
@@ -219,13 +231,20 @@ export default function IllustratedWorld({ section, onTravelState, onProjection,
         arrive(id);
       }
     };
-    engineRef.current = { request, onMotionChange };
+    engineRef.current = { request, onMotionChange, measure };
     image.addEventListener('load', loaded);
     image.addEventListener('error', unavailable);
     const observer = typeof ResizeObserver === 'function' ? new ResizeObserver(measure) : null;
     observer?.observe(mount);
+    const trackPosition = () => {
+      if (!layout || flight || latest.current.section !== currentSection) return;
+      const bounds = mount.getBoundingClientRect();
+      layout.left = bounds.left;
+      layout.top = bounds.top;
+    };
+    window.addEventListener('scroll', trackPosition, { passive: true });
     window.addEventListener('resize', measure);
-    loadTimeout = window.setTimeout(unavailable, 20000);
+    loadTimeout = window.setTimeout(unavailable, 60000);
     request(latest.current.section);
     if (image.complete) {
       if (image.naturalWidth) loaded();
@@ -237,19 +256,24 @@ export default function IllustratedWorld({ section, onTravelState, onProjection,
       cancelAnimationFrame(frame);
       clearTimeout(loadTimeout);
       observer?.disconnect();
+      window.removeEventListener('scroll', trackPosition);
       window.removeEventListener('resize', measure);
       image.removeEventListener('load', loaded);
       image.removeEventListener('error', unavailable);
     };
   }, []);
 
-  useEffect(() => { engineRef.current?.request(section || ''); }, [section]);
+  // Rebase a compact scene's image before paint when its frame becomes full-screen.
+  useLayoutEffect(() => {
+    engineRef.current?.measure();
+    engineRef.current?.request(section || '');
+  }, [section]);
   useEffect(() => { engineRef.current?.onMotionChange(); }, [motion]);
 
   return <div className="illustrated-world" ref={mountRef}>
     <div className="illustrated-world__camera" ref={cameraRef}>
       <img className="illustrated-world__image" ref={imageRef} src={IMAGE_URL} alt="" aria-hidden="true" decoding="async" fetchpriority="high" draggable={false} />
-      <WorldAtmosphere variant="world" />
+      <SanctuaryAtmosphere />
     </div>
   </div>;
 }

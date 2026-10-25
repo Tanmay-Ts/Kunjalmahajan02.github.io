@@ -1,69 +1,66 @@
-﻿# Kunjal — A Little World of Curiosity
+# Kunjal Mahajan — A Botanical Sanctuary
 
-An interactive portfolio using the original sunset floating-island illustration, restored at **5460 × 3072** for sharper close-ups.
+The [live Sanctuary design](https://kunjalmahajan02.github.io/sanctuary/) adapted into the fork's smooth, accessible portfolio experience.
 
 Fork: https://github.com/Tanmay-Ts/Kunjalmahajan02.github.io
 
 Development copy: https://github.com/Tanmay-Ts/kunjal-floating-world
 
-This version is kept in Tanmay-Ts's repositories. The fork retains its relationship to [the original portfolio repository](https://github.com/Kunjalmahajan02/Kunjalmahajan02.github.io); the original website and repository are not changed.
+The original website and repository remain unchanged.
 
-## Explore the world
+## Design and navigation
 
-- Select **Research**, **Projects**, or **Creative** to zoom toward the corresponding island. Content appears after the camera finishes moving.
-- The same image remains in view throughout the transition. Research does not switch to a different interior illustration.
-- The cream header, serif typography, sunset colors, glass buildings, waterfalls, pink trees, and original island arrangement are preserved.
-- Waterfall highlights, drifting mist, and warm motes animate gently. Motion off and the system reduced-motion preference stop ambient movement and make navigation immediate.
-- Contact and résumé remain available from the header. Back to world, the close control, Escape, and browser Back return to the overview.
-- Research includes AI & engineering and Space & physics filters, full topic notes, connected topics, and related projects. These are interests and working notes; no publications or credentials are invented.
+- The full-screen four-island landscape, Cormorant Garamond and Jost typography, floating white labels, warm ivory paper, and brass accents follow the live Sanctuary.
+- **Projects / The Glasshouse:** six arched glass plaques open the existing project case studies and interactive demos.
+- **Research / The Observatory:** a parchment reading folio preserves both research filters, all topic notes, and related project links.
+- **Creative / The Pavilion:** arched frames present the existing dance, art, fashion, and modelling content.
+- **Contact / The Post Garden:** contact links, résumé, biography, education and skills remain available.
+- Mini Kunjal is an optional guide. Her message opens only when selected. The guide starts collapsed on compact screens and remembers dismissal.
+- Phones and portrait tablets use an ivory page with a framed landscape and a 2×2 island menu. Inside a destination, readable panels scroll over the landscape.
 
-## Image quality
+Camera movement and content arrival use the existing interaction engine. One image remains mounted throughout zooming; there is no switch to an unrelated interior image. Rapid route changes, Escape, browser Back, direct links, keyboard focus, and reduced-motion settings are preserved. Motion controls are labelled accurately; there is no autoplay sound.
 
-The supplied 1365 × 768 PNG was upscaled four times on each axis using the general **Real-ESRGAN x4plus** model. Its composition was preserved rather than regenerated. The native output was inspected for alignment and tile seams.
+## Artwork and image quality
 
-- [Full-resolution PNG](./public/world/sunset-world-hd.png): 5460 × 3072 master.
-- [Lossless WebP](./public/world/sunset-world-hd.webp): identical decoded pixels, used by the website.
+The Sanctuary's original 1672×941 artwork is upscaled to **6688×3764** using the approved local Real-ESRGAN x4plus workflow. Its composition is preserved. The native output was inspected for sharpness and tile seams.
 
-The image stays as one persistent DOM node. Its actual layout dimensions change during zoom, avoiding enlargement of an already-rasterized CSS layer. The maximum zoom is bounded by native image width divided by displayed base width and the actual device pixel ratio. Desktop zoom is additionally capped at 2.2×, portrait zoom at 3×. High-DPI screens automatically receive a lower maximum when necessary. AI upscaling improves inferred detail; it cannot recover information that was never present in the source.
+- [PNG master](./public/world/sanctuary-hd.png): 6688×3764, full-resolution output.
+- [WebP image](./public/world/sanctuary-hd.webp): same native dimensions, quality94/method6, approximately 5.08 MB.
+- [Mini Kunjal](./public/world/mini-kunjal.webp): original guide artwork from the live Sanctuary.
 
-Tool: [Real-ESRGAN portable NCNN/Vulkan Windows release](https://github.com/xinntao/Real-ESRGAN/releases/tag/v0.2.5.0), package dated 20220424. Processing used `realesrgan-x4plus`, scale 4, tile 256, NVIDIA GPU 1, and threads `1:1:1`. The portable executable and temporary files are kept outside the tracked website in the ignored QA directory. Licenses: [NCNN implementation, MIT](https://github.com/xinntao/Real-ESRGAN-ncnn-vulkan/blob/master/LICENSE); [Real-ESRGAN, BSD-3-Clause](https://github.com/xinntao/Real-ESRGAN/blob/master/LICENSE).
+The browser resizes the image's actual layout box during zoom rather than scaling a cached low-resolution layer. Zoom is limited by the source pixels, viewport and actual device pixel ratio. Each island has its own framing target. The earlier sunset upscales remain available in [public/world/](./public/world/) as prior design assets.
 
-## Run locally
+Artwork and visual direction are sourced from [Kunjal's Sanctuary](https://kunjalmahajan02.github.io/sanctuary/). Fonts are bundled locally. Upscaler: [Real-ESRGAN portable NCNN/Vulkan](https://github.com/xinntao/Real-ESRGAN/releases/tag/v0.2.5.0), general x4plus model, 4× scale, NVIDIA GPU 1, tile 256, threads 1:1:1. Tool licenses: [MIT implementation](https://github.com/xinntao/Real-ESRGAN-ncnn-vulkan/blob/master/LICENSE) and [BSD-3-Clause model project](https://github.com/xinntao/Real-ESRGAN/blob/master/LICENSE). Tools and temporary files stay in the ignored QA directory.
+
+## Run and validate
 
 Requires Node.js 20+ and npm.
 
 ```sh
 npm ci
 npm run dev
-```
-
-## Validate a production build
-
-```sh
 npm run build
 npm run check
-npm run preview
 ```
 
-The build check validates relative paths, required portfolio artwork and résumé files, and accidental secret patterns. Direct hash routes work on static hosting without rewrites.
+The production check validates relative asset paths, required artwork, native master dimensions, résumé files, and accidental secret patterns. Hash routes work on static hosting without rewrites.
 
-## Edit content and appearance
+## Project structure
 
-- [src/data/](./src/data/): profile, projects, research topics, and creative credits.
-- [IllustratedWorld.jsx](./src/world/IllustratedWorld.jsx): image loading, continuous zoom, pixel-budget limits, and landmark projection.
-- [WorldAtmosphere.jsx](./src/components/WorldAtmosphere.jsx): aligned waterfall highlights, cloud mist, and light effects.
-- [IslandWorld.jsx](./src/components/IslandWorld.jsx): landmark links, travel status, and fallback navigation.
+- [src/data/](./src/data/): profile, projects, research and creative content.
+- [sanctuaryDestinations.js](./src/world/sanctuaryDestinations.js): names, focus points and label placement for all four islands.
+- [IllustratedWorld.jsx](./src/world/IllustratedWorld.jsx): continuous camera movement, image loading and native-pixel zoom limits.
+- [SanctuaryAtmosphere.jsx](./src/components/SanctuaryAtmosphere.jsx): aligned waterfall effects and valley mist.
+- [IslandWorld.jsx](./src/components/IslandWorld.jsx): home composition, projected labels and island navigation.
 - [App.jsx](./src/App.jsx): routing and camera-arrival gating.
-- [AppWindow.jsx](./src/components/AppWindow.jsx): accessible reading drawer.
-- [ResearchApp.jsx](./src/windows/ResearchApp.jsx): research categories, topic cards, and full notes.
-- [world.css](./src/styles/world.css) and [research.css](./src/styles/research.css): interface and drawer appearance.
+- [AppWindow.jsx](./src/components/AppWindow.jsx): room navigation and accessible content folios.
+- [SanctuaryGuide.jsx](./src/components/SanctuaryGuide.jsx): optional Mini Kunjal guide.
+- [sanctuary.css](./src/styles/sanctuary.css), [sanctuary-panels.css](./src/styles/sanctuary-panels.css), and [sanctuary-guide.css](./src/styles/sanctuary-guide.css): responsive design.
 
-Portfolio content is retained from [Kunjalmahajan02.github.io](https://github.com/Kunjalmahajan02/Kunjalmahajan02.github.io). The earlier procedural 3D experiment is preserved on the `prototype/continuous-world` branch. Its source is not imported into the current entry point or bundled into this illustrated experience.
+Portfolio content and project components are retained from [the original repository](https://github.com/Kunjalmahajan02/Kunjalmahajan02.github.io). Previous rendering experiments are not imported by the active entry point.
 
-## Hosting
+## Temporary hosting
 
-A temporary preview serves only the production build through a [Cloudflare Quick Tunnel](https://developers.cloudflare.com/tunnel/get-started/quick-tunnels/). Its random public URL remains available only while the local static server and tunnel processes run and the computer stays online. Stopping the tunnel ends access; closing a browser tab alone does not. The tunnel is not installed as a service and does not start automatically.
+The temporary preview serves only the production build through a [Cloudflare Quick Tunnel](https://developers.cloudflare.com/tunnel/get-started/quick-tunnels/). Its random URL is available while the local server and tunnel run and this computer stays online. Stopping the tunnel ends access; closing a browser tab alone does not. No service or autostart is installed.
 
-Permanent hosting is not enabled for this preview. GitHub Pages deployment remains **manual only** in [deploy.yml](./.github/workflows/deploy.yml); pushing this repository does not deploy the original site or trigger a Pages deployment.
-
-To publish later, configure hosting for this new repository, set canonical/OG URLs in [index.html](./index.html) to the new deployment address, and run the deployment workflow. `base: './'` preserves compatibility with repository subpaths.
+Permanent hosting is not enabled. GitHub Pages remains manual-only through [deploy.yml](./.github/workflows/deploy.yml). Pushing does not deploy the original site or automatically publish this fork to Pages.

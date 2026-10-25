@@ -1,0 +1,362 @@
+/* Sanctuary rooms: glass plaques over the painting, parchment for reading.
+   Loaded after site.css, world.css and research.css to retire their drawer UI. */
+.sanctuary-panel.window-layer[data-room] {
+  --room-ink: #2f2620;
+  --room-muted: #5d4c40;
+  --room-gold: #a9823f;
+  --room-line: rgba(169, 130, 63, .35);
+  --room-paper: rgba(255, 250, 241, .95);
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  max-height: none;
+  padding: 0;
+  display: block;
+  overflow: hidden;
+  color: var(--room-ink);
+  background: transparent;
+  backdrop-filter: none;
+  pointer-events: none;
+  font-family: var(--sans, 'Jost', 'Segoe UI', sans-serif);
+  font-weight: 400;
+  animation: sanctuary-content-in .7s cubic-bezier(.22, .7, .18, 1) both;
+}
+
+@keyframes sanctuary-content-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.sanctuary-room-bar {
+  position: absolute;
+  z-index: 3;
+  inset: 0 0 auto;
+  min-height: 72px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 16px 260px 16px clamp(18px, 3vw, 42px);
+  background: linear-gradient(rgba(255, 249, 238, .82), rgba(255, 249, 238, 0));
+  pointer-events: auto;
+}
+
+.sanctuary-sky-link {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 9px;
+  min-height: 40px;
+  color: var(--room-ink);
+  text-decoration: none;
+  text-shadow: 0 0 14px rgba(255, 249, 238, .9);
+  font: italic 500 21px/1.1 var(--serif, 'Cormorant Garamond', Georgia, serif);
+}
+
+.sanctuary-sky-link span { transition: transform .5s ease; }
+.sanctuary-sky-link:hover span { transform: translateX(-4px); }
+.sanctuary-room-nav { display: flex; align-items: center; flex-wrap: wrap; gap: clamp(14px, 2vw, 28px); }
+.sanctuary-room-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 6px 0;
+  border-bottom: 1px solid transparent;
+  color: var(--room-muted);
+  text-decoration: none;
+  text-shadow: 0 0 12px rgba(255, 249, 238, .95);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  transition: color .4s, border-color .4s;
+}
+.sanctuary-room-nav a:hover,
+.sanctuary-room-nav a[aria-current] { color: var(--room-ink); border-color: var(--room-gold); }
+.sanctuary-panel :focus-visible { outline: 2px solid #916a2d; outline-offset: 4px; }
+.sanctuary-panel [tabindex='-1']:focus { outline: none; }
+
+.sanctuary-panel .window {
+  position: absolute;
+  inset: 76px 0 0;
+  width: auto;
+  height: auto;
+  min-height: 0;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  display: flex;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  overflow: hidden;
+  pointer-events: none;
+  animation: none;
+}
+.sanctuary-panel .window__body {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  padding: 15px clamp(18px, 3vw, 42px) 26px;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(169, 130, 63, .5) transparent;
+  pointer-events: auto;
+}
+.sanctuary-stage-head { position: relative; margin-bottom: 24px; }
+.sanctuary-eyebrow {
+  margin: 0 0 9px;
+  color: var(--room-gold);
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: .35em;
+  text-transform: uppercase;
+}
+.sanctuary-panel .window__title {
+  margin: 0 0 8px;
+  color: var(--room-ink);
+  font-family: var(--serif, 'Cormorant Garamond', Georgia, serif);
+  font-size: clamp(46px, 5.6vw, 88px);
+  font-weight: 500;
+  line-height: .98;
+  letter-spacing: -.025em;
+  text-shadow: none;
+  text-wrap: balance;
+}
+.sanctuary-blurb { margin: 0; color: var(--room-muted); font: italic 400 clamp(18px, 1.6vw, 23px)/1.35 var(--serif, 'Cormorant Garamond', Georgia, serif); }
+.sanctuary-panel .window__lead { margin: 0 0 22px; max-width: none; color: var(--room-muted); font-size: 14px; line-height: 1.75; }
+.sanctuary-panel .window__back { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; margin: 0 0 18px; color: var(--room-muted); font-size: 12px; font-weight: 400; }
+
+/* Transparent full-scene project display, with six glass plaques on the floor. */
+.sanctuary-panel[data-room='projects'][data-view='overview'] .window__body,
+.sanctuary-panel[data-room='creative'][data-view='overview'] .window__body { display: flex; flex-direction: column; }
+.sanctuary-panel[data-room='projects'][data-view='overview'] .sanctuary-stage-head { flex-shrink: 0; isolation: isolate; width: min(760px, 100%); margin: 12px auto 14px; padding: 12px 22px 18px; text-align: center; text-shadow: 0 0 14px rgba(255, 248, 236, .95); }
+.sanctuary-panel[data-room='projects'][data-view='overview'] .sanctuary-stage-head::before,
+.sanctuary-panel[data-room='creative'][data-view='overview'] .sanctuary-stage-head::before { content: ''; position: absolute; inset: -28% -10%; z-index: -1; background: radial-gradient(ellipse at center, rgba(255, 249, 238, .94) 0%, rgba(255, 249, 238, .8) 42%, rgba(255, 249, 238, 0) 74%); }
+.sanctuary-panel[data-room='projects'][data-view='overview'] .sanctuary-room-children,
+.sanctuary-panel[data-room='creative'][data-view='overview'] .sanctuary-room-children { flex: 1; display: flex; flex-direction: column; }
+.sanctuary-panel[data-room='projects'][data-view='overview'] .window__lead { display: none; }
+.sanctuary-panel .folder {
+  display: flex;
+  flex-shrink: 0;
+  justify-content: safe center;
+  align-items: stretch;
+  gap: clamp(10px, 1.2vw, 18px);
+  margin: auto -12px 0;
+  padding: 16px 12px 10px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(169, 130, 63, .5) transparent;
+  list-style: none;
+}
+.sanctuary-panel .folder > li { flex: 0 0 clamp(168px, 13.4vw, 214px); min-width: 0; scroll-snap-align: start; }
+.sanctuary-panel .file-card {
+  position: relative;
+  display: flex;
+  height: 100%;
+  min-height: 248px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+  padding: 38px 18px 20px;
+  overflow: hidden;
+  color: var(--room-ink);
+  background: linear-gradient(180deg, rgba(255, 253, 248, .91), rgba(255, 249, 238, .84));
+  border: 1px solid rgba(169, 130, 63, .55);
+  border-radius: 120px 120px 8px 8px / 46px 46px 8px 8px;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .85) inset, 0 20px 40px -22px rgba(60, 38, 10, .55);
+  text-decoration: none;
+  transition: transform .7s cubic-bezier(.22, .7, .18, 1), box-shadow .7s, background .5s;
+}
+.sanctuary-panel .file-card::before { content: ''; position: absolute; inset: 6px; width: auto; height: auto; border: 1px solid rgba(169, 130, 63, .28); border-radius: 114px 114px 4px 4px / 41px 41px 4px 4px; background: none; pointer-events: none; }
+.sanctuary-panel .file-card::after { content: ''; position: absolute; top: -40%; bottom: -40%; width: 40%; left: -70%; background: linear-gradient(100deg, transparent, rgba(255, 255, 255, .75), transparent); transform: skewX(-14deg); transition: left 1.3s cubic-bezier(.22, .7, .18, 1); pointer-events: none; opacity: .7; }
+.sanctuary-panel .file-card > * { position: relative; z-index: 1; }
+.sanctuary-panel .file-card:hover,
+.sanctuary-panel .file-card:focus-visible { transform: translateY(-7px); background: linear-gradient(180deg, #fffdf8, #fff6e6); box-shadow: 0 1px 0 rgba(255, 255, 255, .85) inset, 0 30px 50px -24px rgba(60, 38, 10, .6); }
+.sanctuary-panel .file-card:hover::after,
+.sanctuary-panel .file-card:focus-visible::after { left: 140%; }
+.sanctuary-panel .file-card__num { top: auto; right: auto; color: var(--room-gold); font-family: var(--sans, 'Jost', sans-serif); font-size: 10px; font-weight: 500; letter-spacing: .25em; }
+.sanctuary-panel .file-card__name { font: 500 23px/1.1 var(--serif, 'Cormorant Garamond', Georgia, serif); }
+.sanctuary-panel .file-card__line { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; color: var(--room-muted); font-size: 12px; line-height: 1.5; }
+.sanctuary-panel .file-card__meta { display: flex; flex-direction: column; align-items: flex-start; gap: 7px; margin-top: auto; padding-top: 8px; font-size: 10.5px; font-weight: 400; line-height: 1.4; }
+.sanctuary-panel .file-card__meta .chip { font-size: 9px; }
+
+/* Folios stay to one side; each has its own natural, keyboard-readable scroll. */
+.sanctuary-panel[data-view='detail'] .window,
+.sanctuary-panel[data-room='research'] .window,
+.sanctuary-panel[data-room='contact'] .window {
+  inset: 84px auto 24px clamp(18px, 3vw, 42px);
+  width: min(620px, 48vw);
+  border: 1px solid rgba(169, 130, 63, .45);
+  border-radius: 12px;
+  background: var(--room-paper);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, .8) inset, 0 34px 80px -34px rgba(40, 24, 10, .6);
+  backdrop-filter: blur(8px);
+}
+.sanctuary-panel[data-view='detail'] .window { left: auto; right: clamp(18px, 3vw, 42px); width: min(720px, 56vw); }
+.sanctuary-panel[data-room='resume'] .window { left: 8%; right: 8%; width: auto; }
+.sanctuary-panel[data-view='detail'] .window__body,
+.sanctuary-panel[data-room='research'] .window__body,
+.sanctuary-panel[data-room='contact'] .window__body { padding: 30px clamp(22px, 2.5vw, 36px) 36px; }
+.sanctuary-panel[data-view='detail'] .window__title,
+.sanctuary-panel[data-room='research'] .window__title,
+.sanctuary-panel[data-room='contact'] .window__title { font-size: clamp(40px, 4vw, 61px); }
+.sanctuary-panel .cols { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+.sanctuary-panel .card { margin-bottom: 16px; padding: 20px 22px; color: var(--room-muted); background: rgba(255, 255, 255, .45); border: 1px solid var(--room-line); border-radius: 8px; box-shadow: none; font-size: 14px; line-height: 1.75; }
+.sanctuary-panel .card h2 { margin-bottom: 12px; color: var(--room-ink); font: 500 25px/1.1 var(--serif, 'Cormorant Garamond', Georgia, serif); }
+.sanctuary-panel .card h3,
+.sanctuary-panel .subhead { color: var(--room-gold); }
+.sanctuary-panel .btn { min-height: 40px; max-width: 100%; padding: 8px 14px; border: 1px solid var(--room-gold); border-radius: 999px; color: var(--room-ink); background: rgba(255, 252, 244, .8); font-size: 12px; font-weight: 400; text-align: center; overflow-wrap: anywhere; box-shadow: none; }
+.sanctuary-panel .btn:hover { color: #fffaf0; background: #916c30; transform: none; }
+.sanctuary-panel .btn--ghost { border-color: var(--room-line); background: transparent; }
+.sanctuary-panel .chip,
+.sanctuary-panel .tags li { border: 1px solid var(--room-line); color: var(--room-muted); background: rgba(255, 252, 246, .7); font-size: 11px; font-weight: 400; }
+.sanctuary-panel .chip--verified { color: #496131; border-color: rgba(93, 122, 60, .45); background: rgba(93, 122, 60, .07); }
+.sanctuary-panel .hearts li::before { color: var(--room-gold); }
+.sanctuary-panel .next-link { color: var(--room-ink); border-color: var(--room-line); background: rgba(255, 252, 246, .65); box-shadow: none; }
+.sanctuary-panel .note { color: var(--room-muted); font-size: 12px; }
+.sanctuary-panel .resume__doc object { min-height: 500px; height: 65vh; }
+
+/* Research log: every existing card, filter and topic link remains available. */
+.sanctuary-panel .research-overview,
+.sanctuary-panel .research-detail { --research-ink: #2f2620; --research-muted: #5d4c40; --research-line: rgba(169, 130, 63, .3); }
+.sanctuary-panel .research-kicker { color: #916a2d; font-size: 10px; font-weight: 500; letter-spacing: .2em; }
+.sanctuary-panel .research-intro { margin-bottom: 20px; }
+.sanctuary-panel .research-intro > p:last-child { color: var(--room-muted); font: italic 400 19px/1.5 var(--serif, 'Cormorant Garamond', Georgia, serif); }
+.sanctuary-panel .research-toolbar { position: static; display: block; margin: 0 0 16px; }
+.sanctuary-panel .research-filters { display: flex; width: 100%; gap: 6px; padding: 4px; border-color: var(--room-line); border-radius: 999px; background: rgba(255, 252, 244, .65); }
+.sanctuary-panel .research-filters button { flex: 1; min-height: 42px; padding: 8px 10px; border-radius: 999px; color: var(--room-muted); font-size: 11px; font-weight: 400; }
+.sanctuary-panel .research-filters button[aria-pressed='true'] { color: #fffaf0; background: #8f6d38; border-color: #8f6d38; box-shadow: none; }
+.sanctuary-panel .research-grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
+.sanctuary-panel .research-topic { display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 5px 14px; min-height: 0; padding: 18px 0; border: 0; border-bottom: 1px solid var(--room-line); border-radius: 0; background: transparent; box-shadow: none; transform: none; }
+.sanctuary-panel .research-topic:hover { background: rgba(255, 255, 255, .35); border-color: var(--room-line); box-shadow: none; transform: none; }
+.sanctuary-panel .research-topic__icon { grid-column: 1; grid-row: 1 / 4; width: 42px; height: 42px; margin: 0; border: 1px solid var(--room-gold); border-radius: 50%; color: #916a2d; background: rgba(255, 255, 255, .45); }
+.sanctuary-panel .research-topic h2 { grid-column: 2; margin: 1px 0 2px; color: var(--room-ink); font: 500 24px/1.1 var(--serif, 'Cormorant Garamond', Georgia, serif); letter-spacing: 0; }
+.sanctuary-panel .research-topic > p { grid-column: 2; margin: 0 0 6px; color: var(--room-muted); font-size: 13px; line-height: 1.65; }
+.sanctuary-panel .research-topic__link { grid-column: 2; color: #8d682e; font-size: 11px; font-weight: 400; }
+.sanctuary-panel .research-detail__lead { color: var(--room-muted); font: italic 400 21px/1.5 var(--serif, 'Cormorant Garamond', Georgia, serif); }
+.sanctuary-panel .research-section h2 { color: var(--room-ink); font: 500 27px/1.15 var(--serif, 'Cormorant Garamond', Georgia, serif); }
+.sanctuary-panel .research-notes { color: var(--room-muted); font-size: 14px; }
+.sanctuary-panel .research-notes li::marker { color: var(--room-gold); }
+.sanctuary-panel .research-links a { color: #866331; font-size: 13px; }
+.sanctuary-panel .research-empty { color: var(--room-muted); background: rgba(235, 217, 183, .22); border: 1px solid var(--room-line); }
+.sanctuary-panel .research-detail__columns { grid-template-columns: minmax(0, 1fr); gap: 0; }
+
+/* Creative frames retain their photographs and every résumé credit. */
+.sanctuary-panel[data-room='creative'] { --room-gold: #a75d6e; --room-line: rgba(167, 93, 110, .32); }
+.sanctuary-panel[data-room='creative'] .sanctuary-stage-head { align-self: flex-start; flex-shrink: 0; max-width: 580px; margin-top: 14px; }
+.sanctuary-panel[data-room='creative'] .window__quote { max-width: 520px; font: italic 400 23px/1.4 var(--serif, 'Cormorant Garamond', Georgia, serif); text-shadow: 0 0 12px #fff9f0; }
+.sanctuary-panel .polaroids { display: flex; align-items: flex-start; justify-content: safe flex-end; flex-shrink: 0; gap: 16px; margin: auto -8px 18px; padding: 16px 8px 8px; overflow-x: auto; list-style: none; scrollbar-width: thin; scrollbar-color: rgba(167, 93, 110, .4) transparent; }
+.sanctuary-panel .polaroid { flex: 0 0 clamp(160px, 17vw, 230px); gap: 8px; padding: 7px 7px 16px; border: 1px solid var(--room-line); border-radius: 999px 999px 10px 10px; background: rgba(255, 250, 246, .92); box-shadow: 0 22px 40px -24px rgba(90, 40, 50, .6); transform: none; transition: transform .7s; }
+.sanctuary-panel .polaroid:hover { transform: translateY(-6px); }
+.sanctuary-panel .polaroid img { aspect-ratio: 3 / 4; max-height: 224px; object-fit: cover; border-radius: 999px 999px 6px 6px; }
+.sanctuary-panel .polaroid figcaption { padding: 6px 5px 0; color: var(--room-ink); font: 500 24px/1.1 var(--serif, 'Cormorant Garamond', Georgia, serif); }
+.sanctuary-panel .polaroid__text { padding: 0 8px; color: var(--room-muted); font-size: 12px; line-height: 1.55; }
+.sanctuary-panel .polaroid__text .hearts { margin: 7px 0 0; font: italic 400 15px/1.3 var(--serif, 'Cormorant Garamond', Georgia, serif); }
+.sanctuary-panel[data-room='creative'] .sanctuary-room-children > .card { flex-shrink: 0; align-self: flex-start; max-width: 660px; margin: 0; padding: 14px 18px; background: rgba(255, 250, 241, .9); }
+.sanctuary-panel[data-room='creative'] .sanctuary-room-children > .card h2 { font-size: 22px; margin-bottom: 8px; }
+
+/* A ruled letter and the existing contact links, education and skills. */
+.sanctuary-panel[data-room='contact'] { --room-gold: #9d6b45; --room-line: rgba(157, 107, 69, .3); }
+.sanctuary-panel[data-room='contact'] .window__lead { font: italic 400 21px/1.5 var(--serif, 'Cormorant Garamond', Georgia, serif); }
+.sanctuary-panel .letter { margin: 28px 0 24px; padding: 26px 22px 20px; border: 1px solid var(--room-line); border-radius: 4px; background: #fffaf1 repeating-linear-gradient(transparent 0 31px, rgba(157, 107, 69, .1) 31px 32px); background-position: 0 10px; box-shadow: 0 1px 0 #fff inset, 0 16px 30px -22px rgba(110, 70, 40, .5); color: #3e3128; font: 400 19px/1.65 var(--serif, 'Cormorant Garamond', Georgia, serif); }
+.sanctuary-panel .letter::after { content: 'K'; top: -17px; right: 18px; width: 48px; height: 48px; border: 0; border-radius: 50%; color: #f3cfc4; background: radial-gradient(circle at 35% 30%, #c45a54, #8f2d2f 60%, #6d1f22); box-shadow: 0 6px 12px rgba(80, 20, 20, .25), inset 0 -3px 6px rgba(0, 0, 0, .2); transform: rotate(12deg); font: italic 600 26px/1 var(--serif, 'Cormorant Garamond', Georgia, serif); }
+.sanctuary-panel .letter__to { font: italic 500 27px/1.2 var(--serif, 'Cormorant Garamond', Georgia, serif); color: var(--room-ink); }
+.sanctuary-panel .letter__sign { font: italic 500 22px/1.4 var(--serif, 'Cormorant Garamond', Georgia, serif); color: var(--room-muted); }
+.sanctuary-panel .letter__actions,
+.sanctuary-panel .letter__links { font-family: var(--sans, 'Jost', sans-serif); }
+.sanctuary-panel .letter__links { margin-top: 18px; font-size: 12px; font-weight: 400; }
+.sanctuary-panel .letter__links a { color: #8b623e; }
+.sanctuary-panel .skills > div { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+
+@media (max-width: 1100px) {
+  .sanctuary-room-bar { gap: 12px; padding-right: 245px; }
+  .sanctuary-room-nav { gap: 13px; }
+  .sanctuary-room-nav a { font-size: 9px; letter-spacing: .12em; }
+  .sanctuary-panel[data-room='research'] .window,
+  .sanctuary-panel[data-room='contact'] .window { width: min(590px, 58vw); }
+  .sanctuary-panel[data-view='detail'] .window { width: min(720px, 68vw); }
+}
+
+/* On phones the painting keeps its own space; the room is one readable page. */
+@media (max-width: 760px), (max-aspect-ratio: 5/4) {
+  .sanctuary-room-bar { min-height: 110px; display: block; padding: 12px 18px 10px; background: linear-gradient(rgba(255, 249, 238, .97) 65%, rgba(255, 249, 238, 0)); }
+  .sanctuary-sky-link { min-height: 40px; padding-right: 180px; font-size: 21px; }
+  .sanctuary-room-nav { flex-wrap: nowrap; justify-content: space-between; gap: 12px; margin-top: 3px; overflow-x: auto; }
+  .sanctuary-room-nav a { min-height: 35px; flex-shrink: 0; font-size: 9px; letter-spacing: .12em; }
+  .sanctuary-panel .window,
+  .sanctuary-panel[data-room='research'] .window,
+  .sanctuary-panel[data-room='contact'] .window,
+  .sanctuary-panel[data-view='detail'] .window { inset: 106px 0 0; width: auto; border: 0; border-radius: 0; background: transparent; box-shadow: none; backdrop-filter: none; }
+  .sanctuary-panel .window__body,
+  .sanctuary-panel[data-room='research'] .window__body,
+  .sanctuary-panel[data-room='contact'] .window__body,
+  .sanctuary-panel[data-view='detail'] .window__body { display: block; padding: clamp(140px, 29vh, 270px) 12px calc(28px + env(safe-area-inset-bottom)); }
+  .sanctuary-panel .sanctuary-stage-head,
+  .sanctuary-panel[data-room='projects'][data-view='overview'] .sanctuary-stage-head,
+  .sanctuary-panel[data-room='creative'][data-view='overview'] .sanctuary-stage-head { width: auto; max-width: none; margin: 0 0 14px; padding: 22px 20px; border: 1px solid var(--room-line); border-radius: 14px; background: rgba(255, 250, 241, .95); text-align: left; text-shadow: none; box-shadow: 0 20px 40px -26px rgba(40, 24, 10, .5); }
+  .sanctuary-panel .sanctuary-stage-head::before { display: none; }
+  .sanctuary-panel .window__title,
+  .sanctuary-panel[data-room='research'] .window__title,
+  .sanctuary-panel[data-room='contact'] .window__title,
+  .sanctuary-panel[data-view='detail'] .window__title { font-size: clamp(38px, 10.5vw, 54px); }
+  .sanctuary-panel .sanctuary-blurb { font-size: 20px; }
+  .sanctuary-panel .sanctuary-room-children,
+  .sanctuary-panel[data-room='projects'][data-view='overview'] .sanctuary-room-children,
+  .sanctuary-panel[data-room='creative'][data-view='overview'] .sanctuary-room-children { display: block; }
+  .sanctuary-panel .folder { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 0; padding: 0; overflow: visible; }
+  .sanctuary-panel .folder > li { min-width: 0; }
+  .sanctuary-panel .file-card { padding: 34px 15px 17px; min-height: 250px; }
+  .sanctuary-panel .file-card__name { font-size: 22px; }
+  .sanctuary-panel .file-card__line { font-size: 12px; }
+  .sanctuary-panel .file-card:hover { transform: none; }
+  .sanctuary-panel[data-room='projects'][data-view='overview'] .window__lead,
+  .sanctuary-panel[data-room='creative'] .window__quote { max-width: none; margin: 0 0 14px; padding: 17px 20px; border: 1px solid var(--room-line); border-radius: 12px; background: rgba(255, 250, 241, .94); text-align: left; text-shadow: none; }
+  .sanctuary-panel[data-room='research'] .sanctuary-room-children,
+  .sanctuary-panel[data-room='contact'] .sanctuary-room-children,
+  .sanctuary-panel[data-view='detail'] .sanctuary-room-children { padding: 22px 18px 26px; border: 1px solid var(--room-line); border-radius: 12px; background: rgba(255, 250, 241, .96); }
+  .sanctuary-panel .research-topic { grid-template-columns: 36px minmax(0, 1fr); gap: 5px 12px; }
+  .sanctuary-panel .research-topic__icon { width: 36px; height: 36px; }
+  .sanctuary-panel .research-topic h2 { font-size: 23px; }
+  .sanctuary-panel .research-filters button { min-height: 44px; padding: 8px; font-size: 10px; }
+  .sanctuary-panel .research-filters button svg { width: 14px; height: 14px; }
+  .sanctuary-panel .polaroids { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 12px; margin: 0 0 14px; padding: 0; overflow: visible; }
+  .sanctuary-panel .polaroid { min-width: 0; }
+  .sanctuary-panel .polaroid img { max-height: none; }
+  .sanctuary-panel .polaroid figcaption { font-size: 22px; }
+  .sanctuary-panel .polaroid:hover { transform: none; }
+  .sanctuary-panel[data-room='creative'] .sanctuary-room-children > .card { max-width: none; }
+  .sanctuary-panel .letter { padding: 26px 16px 20px; }
+  .sanctuary-panel .letter__actions { gap: 8px; }
+  .sanctuary-panel .card { padding: 18px; }
+  .sanctuary-panel[data-view='detail'] .window__body { padding-top: 18px; }
+  .sanctuary-panel .window__back { margin: 0 0 12px; padding: 7px 14px; min-height: 40px; border: 1px solid var(--room-line); border-radius: 999px; background: rgba(255, 250, 241, .96); }
+  .sanctuary-panel .resume__doc object { min-height: 420px; height: 65vh; }
+}
+
+@media (max-width: 360px) {
+  .sanctuary-room-nav { gap: 10px; }
+  .sanctuary-room-nav a { font-size: 8px; }
+  .sanctuary-panel .file-card { padding-left: 12px; padding-right: 12px; }
+  .sanctuary-panel .file-card__name { font-size: 20px; }
+  .sanctuary-panel .research-filters button svg { display: none; }
+}
+
+@media (max-height: 650px) and (min-width: 761px) and (min-aspect-ratio: 5/4) {
+  .sanctuary-panel .window,
+  .sanctuary-panel[data-room='research'] .window,
+  .sanctuary-panel[data-room='contact'] .window,
+  .sanctuary-panel[data-view='detail'] .window { top: 70px; bottom: 12px; }
+  .sanctuary-panel[data-room='projects'][data-view='overview'] .window__title { font-size: 56px; }
+  .sanctuary-panel .file-card { min-height: 230px; }
+}
+
+html[data-motion='reduced'] .sanctuary-panel,
+html[data-motion='reduced'] .sanctuary-panel * { animation: none !important; transition: none !important; }

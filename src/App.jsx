@@ -10,6 +10,7 @@ import ResearchApp from './windows/ResearchApp.jsx';
 import CreativeApp from './windows/CreativeApp.jsx';
 import ContactApp from './windows/ContactApp.jsx';
 import ResumeApp from './windows/ResumeApp.jsx';
+import SanctuaryGuide from './components/SanctuaryGuide.jsx';
 const ALIASES = { universe: '', lab: 'projects', inventor: 'projects', archive: 'projects', observatory: 'research', garden: 'research', system: 'research', daydream: 'creative', about: 'contact' };
 function resolve([section, sub, third]) {
   if (section === 'research' && sub === 'map') return ['research', third];
@@ -60,7 +61,7 @@ export default function App() {
   const lastIsland = useRef(section);
   useEffect(() => {
     if (section) { lastIsland.current = section; return; }
-    document.title = 'Kunjal — A Little World of Curiosity';
+    document.title = 'Kunjal Mahajan — A Botanical Sanctuary';
     if (arrived && lastIsland.current) {
       (document.getElementById('island-' + lastIsland.current) || document.getElementById('world-title'))?.focus({ preventScroll: true });
       lastIsland.current = undefined;
@@ -84,6 +85,6 @@ export default function App() {
     <a className="skip-link" href="#main" onClick={skipToContent}>Skip to content</a>
     <TopBar current={section} />
     <main id="main" tabIndex={-1} className="world-main"><IslandWorld section={section} onArrival={onArrival} />{win}</main>
-    <footer className="world-footer"><span>A LITTLE WORLD, A LOT TO EXPLORE</span><span>Made with curiosity in Thane, Mumbai <span aria-hidden="true">✧</span></span></footer>
+    <SanctuaryGuide section={section} />
   </div>;
 }

@@ -31,6 +31,6 @@ export function replacePath(path) {
 
 export function useDocumentTitle(title) {
   useEffect(() => {
-    document.title = title ? `${title} · Kunjal` : 'Kunjal — A Little World of Curiosity';
+    document.title = title ? `${title} · Kunjal Mahajan` : 'Kunjal Mahajan — A Botanical Sanctuary';
   }, [title]);
 }

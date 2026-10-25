@@ -1,0 +1,27 @@
+.sanctuary-guide { position: fixed; z-index: 30; right: clamp(12px, 2vw, 28px); bottom: calc(14px + env(safe-area-inset-bottom)); width: 128px; height: 190px; color: #2f2620; }
+.sanctuary-guide button, .sanctuary-guide a { -webkit-tap-highlight-color: transparent; }
+.sanctuary-guide button:focus-visible, .sanctuary-guide a:focus-visible { outline: 2px solid #a9823f; outline-offset: 4px; }
+.sanctuary-guide__character { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; border: 0; border-radius: 12px; background: none; cursor: pointer; }
+.sanctuary-guide__character img { display: block; width: 100%; height: 100%; object-fit: contain; transform: scaleX(-1); filter: drop-shadow(0 8px 12px #50282838); user-select: none; -webkit-user-drag: none; }
+.sanctuary-guide[data-motion='full'] .sanctuary-guide__character img { animation: sanctuary-guide-float 4.2s ease-in-out infinite; }
+@keyframes sanctuary-guide-float { 0%, 100% { transform: scaleX(-1) translateY(0); } 50% { transform: scaleX(-1) translateY(-4px); } }
+.sanctuary-guide__dismiss { position: absolute; z-index: 2; top: 4px; right: 0; width: 28px; height: 28px; display: grid; place-items: center; border: 1px solid #a9823f66; border-radius: 50%; background: #fffaf1f2; color: #5d4c40; font: 400 19px/1 Jost, sans-serif; cursor: pointer; box-shadow: 0 4px 10px -4px #3c1e1459; }
+.sanctuary-guide__dismiss:hover { color: #fffaf0; background: #a9823f; }
+.sanctuary-guide__message { position: absolute; right: calc(100% - 12px); bottom: 52%; width: 240px; max-width: calc(100vw - 150px); padding: 13px 16px; border: 1px solid #a9823f61; border-radius: 16px 16px 4px 16px; background: #fffaf1f7; box-shadow: 0 18px 36px -20px #3c1e1480; }
+.sanctuary-guide__message[hidden] { display: none; }
+.sanctuary-guide__message p { margin: 0; font: italic 400 17px/1.4 'Cormorant Garamond', Georgia, serif; }
+.sanctuary-guide__actions { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+.sanctuary-guide__actions a, .sanctuary-guide__actions button { padding: 7px 13px; border: 1px solid #a9823f; border-radius: 999px; background: #a9823f; color: #fffaf0; font: 500 12px/1.3 Jost, sans-serif; text-decoration: none; cursor: pointer; }
+.sanctuary-guide__actions button { background: transparent; color: #5d4c40; border-color: #a9823f66; }
+.sanctuary-guide__actions a:hover, .sanctuary-guide__actions button:hover { background: #8f6d32; color: #fffaf0; }
+.sanctuary-guide--collapsed { width: 36px; height: 36px; }
+.sanctuary-guide__restore { display: grid; place-items: center; width: 36px; height: 36px; padding: 6px; border: 1px solid #a9823f59; border-radius: 50%; background: #fffaf1e6; color: #a9823f; box-shadow: 0 8px 20px -10px #3c1e1473; cursor: pointer; }
+.sanctuary-guide__restore:hover { background: #fffdf8; }
+@media (max-width: 760px), (max-aspect-ratio: 5/4) {
+  .sanctuary-guide { width: 96px; height: 144px; right: 8px; bottom: calc(8px + env(safe-area-inset-bottom)); }
+  .sanctuary-guide--collapsed { width: 36px; height: 36px; right: 14px; bottom: calc(14px + env(safe-area-inset-bottom)); }
+  .sanctuary-guide__message { right: 0; bottom: calc(100% + 4px); width: 250px; max-width: calc(100vw - 32px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sanctuary-guide[data-motion='full'] .sanctuary-guide__character img { animation: none; }
+}

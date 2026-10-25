@@ -1,0 +1,137 @@
+/* Visual language from the live Botanical Sanctuary, with our camera/router. */
+:root {
+  --serif: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --sans: 'Jost Variable', 'Jost', 'Segoe UI', sans-serif;
+  --font-display: var(--serif);
+  --font-body: var(--sans);
+  --cream: #fff9f0;
+  --paper: #fffaf1;
+  --ivory: #fff9f0;
+  --ink: #2f2620;
+  --ink-soft: #5d4c40;
+  --gold: #a9823f;
+  --hot: #8b642d;
+  --plum: #5d4c40;
+  --plum-deep: #2f2620;
+  --header-h: 0px;
+  --footer-h: 0px;
+}
+html, body, #root { height: 100%; min-height: 100%; }
+body { background: #fff9f0; overflow: hidden; font-family: var(--sans); font-weight: 400; }
+.universe-app { position: relative; display: block; height: 100dvh; min-height: 0; }
+.world-main { position: absolute; inset: 0; height: 100%; overflow: hidden; }
+.sanctuary-world { position: absolute; inset: 0; background: #fff9f0; }
+.sanctuary-scene { position: absolute; inset: 0; overflow: hidden; }
+.sanctuary-world .illustrated-world::after { background: linear-gradient(0deg,#452a282b,transparent 43%); }
+.sanctuary-world .illustrated-world__camera { mask-image: none; -webkit-mask-image: none; }
+.sanctuary-hero {
+  position: absolute; z-index: 4; left: clamp(20px,5vw,76px); bottom: clamp(125px,16vh,150px);
+  max-width: min(700px,86vw); color: #fffdf8; pointer-events: none;
+  text-shadow: 0 1px 2px #46201473,0 0 14px #46201447;
+  animation: sanctuary-hero-in 1s ease both;
+}
+.sanctuary-hero::before { content: ''; position: absolute; inset: -18% -30% -24% -40%; z-index: -1; background: radial-gradient(closest-side,#542a222e,transparent); }
+.sanctuary-hi { margin: 0 0 4px; font: italic 400 clamp(18px,1.7vw,24px)/1.2 var(--serif); }
+.sanctuary-hero h1 { font: 500 clamp(42px,5vw,86px)/.95 var(--serif); letter-spacing: -.01em; margin: 0; }
+.sanctuary-hero h1 span { white-space: nowrap; }
+.sanctuary-role { margin: 16px 0 0; max-width: 700px; font: 400 clamp(10px,.82vw,12.5px)/1.6 var(--sans); letter-spacing: .19em; text-transform: uppercase; }
+.sanctuary-tagline { margin: 8px 0 0; font: italic 400 clamp(17px,1.45vw,21px)/1.3 var(--serif); }
+.sanctuary-fallback-note { max-width: 410px; font-size: 14px; line-height: 1.6; }
+@keyframes sanctuary-hero-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.sanctuary-pins { position: absolute; inset: 0; z-index: 5; pointer-events: none; }
+.sanctuary-pin {
+  position: absolute; display: grid; justify-items: center; gap: 2px; padding: 6px 10px 0;
+  transform: translate(-50%,-100%); color: #fffdf8; text-decoration: none;
+  text-shadow: 0 1px 2px #3c1c128c,0 0 10px #3c1c124d; pointer-events: auto;
+  opacity: .92; transition: opacity .3s; border-radius: 3px;
+}
+.sanctuary-pin__kind { font: 500 9.5px/1.1 var(--sans); letter-spacing: .3em; text-transform: uppercase; padding-left: .3em; }
+.sanctuary-pin__name { font: italic 500 clamp(17px,1.45vw,22px)/1.15 var(--serif); white-space: nowrap; transition: letter-spacing .5s; }
+.sanctuary-pin i { position: relative; display: block; width: 1px; height: 24px; margin-top: 6px; background: linear-gradient(#fffdf833,#fffdf8); }
+.sanctuary-pin i::after { content: ''; position: absolute; left: -2px; bottom: -3px; width: 5px; height: 5px; border-radius: 50%; background: #fff7e2; box-shadow: 0 0 10px 3px #ffecc4b3; animation: sanctuary-beacon 3.6s ease-in-out infinite; }
+.sanctuary-pin:hover, .sanctuary-pin:focus-visible { opacity: 1; }
+.sanctuary-pin:hover .sanctuary-pin__name { letter-spacing: .025em; }
+.sanctuary-pin:focus-visible { outline: 2px solid #fff3d6; outline-offset: 5px; background: #65422a35; }
+.sanctuary-pin[data-mode='side'] { transform: translate(0,-50%); grid-template-columns: 24px auto; grid-template-rows: auto auto; justify-items: start; align-items: center; column-gap: 10px; padding: 6px 10px 6px 0; }
+.sanctuary-pin[data-mode='side'] i { grid-column: 1; grid-row: 1/3; width: 24px; height: 1px; margin: 0; background: linear-gradient(90deg,#fffdf8,#fffdf833); }
+.sanctuary-pin[data-mode='side'] i::after { left: -3px; top: -2px; bottom: auto; }
+.sanctuary-pin[data-mode='side'] .sanctuary-pin__kind, .sanctuary-pin[data-mode='side'] .sanctuary-pin__name { grid-column: 2; }
+.sanctuary-pin[data-mode='below'] { transform: translate(-50%,0); padding: 0 10px 6px; }
+.sanctuary-pin[data-mode='below'] i { grid-row: 1; margin: 0 0 6px; background: linear-gradient(#fffdf8,#fffdf833); }
+.sanctuary-pin[data-mode='below'] i::after { top: -3px; bottom: auto; }
+@keyframes sanctuary-beacon { 50% { opacity: .45; transform: scale(.7); } }
+.sanctuary-hint { position: absolute; z-index: 4; top: 28px; left: 50%; transform: translateX(-50%); margin: 0; color: #fffdf8; text-shadow: 0 1px 14px #4622168c; font: italic 400 17px/1.2 var(--serif); white-space: nowrap; pointer-events: none; }
+.sanctuary-compass { position: absolute; z-index: 6; left: clamp(10px,calc(5vw - 10px),66px); bottom: clamp(30px,6vh,64px); display: flex; gap: clamp(4px,1.6vw,26px); }
+.sanctuary-compass a { position: relative; display: grid; gap: 4px; justify-items: start; padding: 6px 10px; color: #fffdf8; text-decoration: none; text-shadow: 0 1px 2px #3c1c1280,0 0 10px #3c1c124d; }
+.sanctuary-compass em { font: italic 500 20px/1.1 var(--serif); }
+.sanctuary-compass span { font: 400 9.5px/1.1 var(--sans); letter-spacing: .29em; text-transform: uppercase; }
+.sanctuary-compass small { display: none; }
+.sanctuary-compass a::after { content: ''; position: absolute; left: 10px; right: 10px; bottom: -2px; height: 1px; background: linear-gradient(90deg,#fff3d6,transparent); transform: scaleX(0); transform-origin: left; transition: transform .5s; }
+.sanctuary-compass a:hover::after, .sanctuary-compass a:focus-visible::after { transform: scaleX(1); }
+.sanctuary-compass a:focus-visible { outline: 2px solid #fff3d6; outline-offset: 3px; }
+.sanctuary-attribution { display: none; }
+.sanctuary-tools { position: fixed; z-index: 40; top: clamp(14px,3vh,30px); right: clamp(14px,3vw,36px); display: flex; align-items: center; gap: 16px; color: #fffdf8; }
+.sanctuary-resume { display: inline-flex; align-items: center; gap: 7px; color: inherit; font: italic 500 18px/1 var(--serif); text-decoration: none; text-shadow: 0 1px 8px #3c1c1455; }
+.sanctuary-resume:hover { text-decoration: underline; }
+.sanctuary-motion { display: inline-flex; gap: 8px; align-items: center; border: 1px solid #fffaf073; border-radius: 999px; padding: 8px 12px; min-height: 36px; background: #3c221e24; color: inherit; font: 400 10px/1 var(--sans); letter-spacing: .15em; text-transform: uppercase; cursor: pointer; }
+.sanctuary-tools--inside { color: var(--ink); }
+.sanctuary-tools--inside .sanctuary-resume { text-shadow: none; }
+.sanctuary-tools--inside .sanctuary-motion { border-color: #5a3c1e4d; background: #fffaf1b3; }
+.sanctuary-tools :focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+.sanctuary-travel-status { position: absolute; z-index: 10; bottom: 25px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 12px; padding: 11px 18px; border: 1px solid #fffaf075; border-radius: 50px; color: #fffaf0; background: #503b3a80; font: italic 400 18px/1.2 var(--serif); white-space: nowrap; max-width: calc(100% - 28px); }
+.sanctuary-travel-star { font-size: 24px; }
+.sanctuary-flight-back { position: absolute; z-index: 10; top: 24px; left: 34px; display: flex; align-items: center; gap: 8px; color: #fffdf8; text-decoration: none; text-shadow: 0 1px 8px #3c1c1466; font: italic 500 21px var(--serif); }
+.island-world--unavailable.sanctuary-world { background: linear-gradient(145deg,#fff3d8,#e7c9cd 62%,#c9bdd9); }
+.island-world--unavailable .sanctuary-hero, .island-world--unavailable .sanctuary-compass a { color: var(--ink); text-shadow: none; }
+.island-world--unavailable .sanctuary-scene { visibility: hidden; }
+
+@media (max-height: 650px) and (min-width: 761px) and (min-aspect-ratio: 5/4) {
+  .sanctuary-hero { bottom: 108px; }
+  .sanctuary-hero h1 { font-size: 50px; }
+  .sanctuary-role { margin-top: 12px; font-size: 10px; max-width: 580px; }
+  .sanctuary-tagline { font-size: 18px; }
+  .sanctuary-compass { bottom: 30px; }
+}
+@media (max-width: 760px), (max-aspect-ratio: 5/4) {
+  html, body, #root { height: auto; min-height: 100%; }
+  body { overflow-y: auto; }
+  .universe-app { height: auto; min-height: 100dvh; }
+  .world-main { position: relative; inset: auto; overflow: visible; height: auto; }
+  .sanctuary-world { position: relative; inset: auto; overflow: visible; min-height: 100dvh; padding: 0 16px; background: linear-gradient(180deg,#fff9f0 0%,#fbeee2 30%,#f6dfd2 58%,#ead8e3 100%); }
+  .sanctuary-hero { position: relative; inset: auto; max-width: none; padding: calc(70px + env(safe-area-inset-top)) 4px 20px; color: var(--ink); text-shadow: none; pointer-events: auto; animation: none; }
+  .sanctuary-hero::before { display: none; }
+  .sanctuary-hi { color: var(--ink-soft); font-size: 19px; }
+  .sanctuary-hero h1 { font-size: clamp(44px,13.1vw,66px); line-height: .95; }
+  .sanctuary-role { color: var(--gold); font-size: 10px; font-weight: 500; letter-spacing: .16em; margin-top: 14px; }
+  .sanctuary-tagline { color: var(--ink-soft); font-size: 18px; line-height: 1.35; }
+  .sanctuary-scene { position: relative; inset: auto; aspect-ratio: 16/10.5; border-radius: 18px; box-shadow: 0 26px 50px -26px #5a323c8c; }
+  .sanctuary-pin { padding: 3px 6px 0; gap: 2px; }
+  .sanctuary-pin__kind { font-size: 7px; letter-spacing: .23em; }
+  .sanctuary-pin__name { font-size: 13.5px; }
+  .sanctuary-pin i { height: 14px; margin-top: 3px; }
+  .sanctuary-pin[data-mode='side'] { grid-template-columns: 14px auto; column-gap: 5px; padding: 3px 6px 3px 0; }
+  .sanctuary-pin[data-mode='side'] i { width: 14px; height: 1px; }
+  .sanctuary-hint { top: auto; bottom: 10px; font-size: 14px; }
+  .sanctuary-compass { position: relative; inset: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 22px 0 6px; }
+  .sanctuary-compass a { justify-items: start; text-align: left; gap: 5px; padding: 16px 14px 15px; background: #fffcf6d1; border: 1px solid #a9823f52; border-radius: 14px; color: var(--ink); text-shadow: none; box-shadow: 0 14px 28px -22px #5a322880; }
+  .sanctuary-compass em { font-size: 20px; }
+  .sanctuary-compass span { color: var(--gold); font-weight: 500; font-size: 9px; letter-spacing: .25em; }
+  .sanctuary-compass small { display: block; font: italic 400 15px/1.3 var(--serif); color: var(--ink-soft); margin-top: 2px; }
+  .sanctuary-compass a::after { display: none; }
+  .sanctuary-compass a:focus-visible { outline-color: var(--gold); }
+  .sanctuary-attribution { display: block; margin: 0; padding: 22px 0 calc(30px + env(safe-area-inset-bottom)); text-align: center; font: italic 400 16px var(--serif); color: var(--ink-soft); }
+  .sanctuary-tools { top: calc(14px + env(safe-area-inset-top)); right: 14px; gap: 12px; color: var(--ink); }
+  .sanctuary-resume { font-size: 16px; text-shadow: none; }
+  .sanctuary-motion { background: #fffcf6bf; border-color: #5a3c1e38; font-size: 9px; }
+  .sanctuary-world:not([data-destination='world']) { padding: 0; min-height: 100dvh; }
+  .sanctuary-world:not([data-destination='world']) .sanctuary-scene { position: fixed; inset: 0; aspect-ratio: auto; width: 100%; height: 100dvh; border-radius: 0; box-shadow: none; }
+  .universe-app:not([data-section='world']) { height: 100dvh; min-height: 0; }
+  .universe-app:not([data-section='world']) .world-main { height: 100dvh; overflow: hidden; }
+  html:has(.universe-app:not([data-section='world'])), body:has(.universe-app:not([data-section='world'])) { height: 100dvh; overflow: hidden; }
+  .sanctuary-flight-back { top: 17px; left: 18px; font-size: 19px; }
+  .sanctuary-travel-status { position: fixed; bottom: 25px; font-size: 16px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-motion='full']) .sanctuary-hero, html:not([data-motion='full']) .sanctuary-pin i::after { animation: none; }
+}
+html[data-motion='reduced'] .sanctuary-hero, html[data-motion='reduced'] .sanctuary-pin i::after { animation: none; }

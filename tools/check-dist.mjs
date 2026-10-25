@@ -32,6 +32,10 @@ for (const f of [
   'og-image.png',
   'world/sunset-world-hd.webp',
   'world/sunset-world-hd.png',
+  'world/sanctuary-hd.webp',
+  'world/sanctuary-hd.png',
+  'world/mini-kunjal.webp',
+  'sanctuary-mark.svg',
   'resume/Kunjal_Mahajan_Resume.pdf',
   'art/creative-dance-640.webp',
   'art/creative-art-640.webp',
@@ -47,6 +51,14 @@ if (existsSync(worldMaster)) {
   const png = readFileSync(worldMaster);
   if (png.length < 24 || png.toString('hex', 0, 8) !== '89504e470d0a1a0a' || png.readUInt32BE(16) !== 5460 || png.readUInt32BE(20) !== 3072) {
     fail('sunset world master must remain a 5460 x 3072 PNG');
+  }
+}
+
+const sanctuaryMaster = join(dist, 'world/sanctuary-hd.png');
+if (existsSync(sanctuaryMaster)) {
+  const png = readFileSync(sanctuaryMaster);
+  if (png.length < 24 || png.toString('hex', 0, 8) !== '89504e470d0a1a0a' || png.readUInt32BE(16) !== 6688 || png.readUInt32BE(20) !== 3764) {
+    fail('sanctuary master must remain a 6688 x 3764 PNG');
   }
 }
 
