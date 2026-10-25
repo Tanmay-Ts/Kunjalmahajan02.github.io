@@ -2,9 +2,11 @@
 
 An interactive portfolio using the original sunset floating-island illustration, restored at **5460 × 3072** for sharper close-ups.
 
-Repository: https://github.com/Tanmay-Ts/kunjal-floating-world
+Fork: https://github.com/Tanmay-Ts/Kunjalmahajan02.github.io
 
-This repository is independent of [the original portfolio](https://kunjalmahajan02.github.io/). Its remote points only to the new repository. The original website and repository are not changed.
+Development copy: https://github.com/Tanmay-Ts/kunjal-floating-world
+
+This version is kept in Tanmay-Ts's repositories. The fork retains its relationship to [the original portfolio repository](https://github.com/Kunjalmahajan02/Kunjalmahajan02.github.io); the original website and repository are not changed.
 
 ## Explore the world
 
@@ -60,6 +62,8 @@ Portfolio content is retained from [Kunjalmahajan02.github.io](https://github.co
 
 ## Hosting
 
-No production site has been deployed for this experiment. GitHub Pages deployment is **manual only** in [deploy.yml](./.github/workflows/deploy.yml); pushing this repository does not deploy the original site or trigger a Pages deployment.
+A temporary preview serves only the production build through a [Cloudflare Quick Tunnel](https://developers.cloudflare.com/tunnel/get-started/quick-tunnels/). Its random public URL remains available only while the local static server and tunnel processes run and the computer stays online. Stopping the tunnel ends access; closing a browser tab alone does not. The tunnel is not installed as a service and does not start automatically.
+
+Permanent hosting is not enabled for this preview. GitHub Pages deployment remains **manual only** in [deploy.yml](./.github/workflows/deploy.yml); pushing this repository does not deploy the original site or trigger a Pages deployment.
 
 To publish later, configure hosting for this new repository, set canonical/OG URLs in [index.html](./index.html) to the new deployment address, and run the deployment workflow. `base: './'` preserves compatibility with repository subpaths.
