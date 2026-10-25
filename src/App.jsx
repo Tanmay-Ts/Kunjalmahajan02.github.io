@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import { href, useDocumentTitle, useRoute } from './router.js';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { go, href, useDocumentTitle, useRoute } from './router.js';
 import { projectById } from './data/projects.js';
 import { topicById } from './data/research.js';
 import TopBar from './components/TopBar.jsx';
@@ -39,17 +39,42 @@ export default function App() {
   const raw = useRoute();
   const route = resolve(raw);
   const [section] = route;
-  const win = windowFor(route);
+  const target = section || '';
+  // Arrival belongs to a particular journey. Revisiting a section while another
+  // flight is being cancelled must never briefly reveal an earlier drawer.
+  const journey = useRef({ section: target, serial: 0 });
+  if (journey.current.section !== target) {
+    journey.current = { section: target, serial: journey.current.serial + 1 };
+  }
+  const serial = journey.current.serial;
+  const [arrival, setArrival] = useState(null);
+  const arrived = arrival?.section === target && arrival.serial === serial;
+  const onArrival = useCallback((arrivedSection) => {
+    if (journey.current.section !== arrivedSection || journey.current.serial !== serial) return;
+    setArrival({ section: arrivedSection, serial });
+  }, [serial]);
+  const win = arrived ? windowFor(route) : null;
   useEffect(() => {
     if (raw[0] in ALIASES || (raw[0] === 'research' && raw[1] === 'map')) window.history.replaceState(null, '', href(route.filter(Boolean).join('/')));
   }, [raw, route]);
-  const previousSection = useRef(section);
+  const lastIsland = useRef(section);
   useEffect(() => {
-    const previous = previousSection.current;
-    previousSection.current = section;
-    if (section) return;
+    if (section) { lastIsland.current = section; return; }
     document.title = 'Kunjal — A Little World of Curiosity';
-    if (previous) (document.getElementById('island-' + previous) || document.getElementById('world-title'))?.focus({ preventScroll: true });
+    if (arrived && lastIsland.current) {
+      (document.getElementById('island-' + lastIsland.current) || document.getElementById('world-title'))?.focus({ preventScroll: true });
+      lastIsland.current = undefined;
+    }
+  }, [section, arrived]);
+  useEffect(() => {
+    const onKey = (event) => {
+      if (event.key === 'Escape' && section) {
+        event.preventDefault();
+        go('');
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
   }, [section]);
   const skipToContent = (e) => {
     e.preventDefault();
@@ -58,7 +83,7 @@ export default function App() {
   return <div className="universe-app" data-section={section || 'world'}>
     <a className="skip-link" href="#main" onClick={skipToContent}>Skip to content</a>
     <TopBar current={section} />
-    <main id="main" tabIndex={-1} className="world-main"><IslandWorld section={section} />{win}</main>
+    <main id="main" tabIndex={-1} className="world-main"><IslandWorld section={section} onArrival={onArrival} />{win}</main>
     <footer className="world-footer"><span>A LITTLE WORLD, A LOT TO EXPLORE</span><span>Made with curiosity in Thane, Mumbai <span aria-hidden="true">✧</span></span></footer>
   </div>;
 }

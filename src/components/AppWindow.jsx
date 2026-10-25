@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { go, href } from '../router.js';
+import { href } from '../router.js';
 import { isReducedMotion } from '../motion.js';
 import WorldIcon from './WorldIcon.jsx';
 // A reading drawer in the landscape. Navigation stays available while reading.
@@ -9,11 +9,10 @@ export default function AppWindow({ file, title, crumb, back, tone = 'pink', chi
   const sectionName = { 'PROJECTS.EXE': 'Projects', 'RESEARCH.TXT': 'Research', 'CREATIVE.EXE': 'Creative', 'CONTACT.ME': 'Contact', 'RESUME.PDF': 'Résumé' }[file] || 'Explore';
   useEffect(() => {
     bodyRef.current?.scrollTo(0, 0);
-    const timer = window.setTimeout(() => titleRef.current?.focus({ preventScroll: true }), isReducedMotion() ? 0 : 950);
+    const timer = window.setTimeout(() => titleRef.current?.focus({ preventScroll: true }), isReducedMotion() ? 0 : 350);
     const cancelFocus = () => clearTimeout(timer);
     const onKey = (e) => {
       if (e.key === 'Tab') cancelFocus();
-      if (e.key === 'Escape') { cancelFocus(); e.preventDefault(); go(''); }
     };
     document.addEventListener('keydown', onKey);
     document.addEventListener('pointerdown', cancelFocus);

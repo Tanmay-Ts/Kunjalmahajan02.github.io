@@ -1,46 +1,64 @@
-import { useState } from 'react';
+﻿import { useCallback, useEffect, useState } from 'react';
 import { href } from '../router.js';
+import WorldScene from '../world/WorldScene.jsx';
 import WorldIcon from './WorldIcon.jsx';
-import WorldAtmosphere from './WorldAtmosphere.jsx';
-const BASE = import.meta.env.BASE_URL;
+
 const destinations = [
-  { id: 'research', name: 'Research', icon: 'book', caption: 'The glass library', x: '31%', y: '45%' },
-  { id: 'projects', name: 'Projects', icon: 'telescope', caption: 'The observatory', x: '61%', y: '25%' },
-  { id: 'creative', name: 'Creative', icon: 'palette', caption: 'The garden pavilion', x: '87%', y: '31%' },
+  { id: 'research', name: 'Research', icon: 'book', caption: 'The glass library', journey: 'Entering the glass library…' },
+  { id: 'projects', name: 'Projects', icon: 'telescope', caption: 'The observatory', journey: 'Approaching the observatory…' },
+  { id: 'creative', name: 'Creative', icon: 'palette', caption: 'The garden pavilion', journey: 'Visiting the garden pavilion…' },
 ];
-export default function IslandWorld({ section }) {
-  const [artFailed, setArtFailed] = useState(false);
+
+export default function IslandWorld({ section, onArrival }) {
+  const target = section || '';
+  const [travel, setTravel] = useState({ section: target, state: 'travelling' });
+  const [projected, setProjected] = useState({});
+  const [unavailable, setUnavailable] = useState(false);
+  const arrived = unavailable || (travel.section === target && travel.state === 'arrived');
+  const destination = destinations.find((item) => item.id === section);
+  const onTravelState = useCallback((event) => {
+    if (event.section !== target) return;
+    setTravel(event);
+    if (event.state === 'arrived') onArrival(event.section);
+  }, [target, onArrival]);
+
+  // Navigation and all portfolio content remain available without WebGL.
+  useEffect(() => {
+    if (unavailable) onArrival(target);
+  }, [unavailable, target, onArrival]);
+
   return (
-    <section className="island-world" aria-label="Kunjal’s floating world" data-destination={section || 'world'}>
-      <div className="island-camera" aria-hidden="true">
-        <div className="island-artboard"><img className="island-landscape" src={BASE + 'world/islands.webp'} alt="" fetchpriority="high" onError={() => setArtFailed(true)} /><WorldAtmosphere variant="world" active={section !== 'research'} /></div>
-      </div>
-      <img className="library-interior" src={BASE + 'world/library.webp'} alt="" aria-hidden="true" />
-      <div className="library-aura" aria-hidden="true"><WorldAtmosphere variant="library" active={section === 'research'} /></div>
-      <div className="world-atmosphere" aria-hidden="true" />
+    <section className={'island-world' + (unavailable ? ' island-world--unavailable' : '')} aria-label="Kunjal’s floating world" data-destination={target || 'world'} data-camera-state={arrived ? 'arrived' : 'travelling'}>
+      <WorldScene section={section} onTravelState={onTravelState} onProjection={setProjected} onUnavailable={setUnavailable} />
       {!section && <>
         <div className="world-intro">
           <span className="world-eyebrow"><span /> WELCOME TO MY LITTLE UNIVERSE</span>
-          <h1 id="world-title" tabIndex={-1}>A world of <br />curiosity<span>.</span></h1>
-          <p>Part engineer, part artist. <br />Always exploring.</p>
+          <h1 id="world-title" tabIndex={-1}>{unavailable ? 'Explore the portfolio' : <>A world of <br />curiosity<span>.</span></>}</h1>
+          <p>{unavailable ? 'The 3D world is unavailable in this browser. Every project, research note, and creative work is still here.' : <>Part engineer, part artist. <br />Always exploring.</>}</p>
         </div>
-        <div className="island-targets"><div className="island-artboard">
-          {destinations.map((d) => <a key={d.id} id={'island-' + d.id} className={'island-pin island-pin--' + d.id} href={href(d.id)} style={{ '--x': d.x, '--y': d.y }} aria-label={d.name + ' — enter ' + d.caption.toLowerCase()}>
-            <span className="island-pin__label"><WorldIcon name={d.icon} size={19} />{d.name}<WorldIcon name="arrow" size={15} /></span>
-            <span className="island-pin__line" aria-hidden="true" /><span className="island-pin__dot" aria-hidden="true" />
-          </a>)}
-        </div></div>
-        <div className="world-identity"><WorldIcon size={28} /><div><strong>Kunjal Mahajan</strong><span>AI &amp; Data Science Engineer</span></div></div>
-        <div className="world-invitation"><span>Choose an island. Follow your curiosity.</span><WorldIcon name="chevron" size={18} /></div>
-        <nav className="world-mobile-destinations" aria-label="Explore the islands">
-          {destinations.map((d) => <a key={d.id} href={href(d.id)}><WorldIcon name={d.icon} /><strong>{d.name}</strong><span>{d.caption}</span></a>)}
-        </nav>
-        {artFailed && <p className="world-image-note">The view couldn’t load. You can still explore every island using the navigation.</p>}
+        {arrived && !unavailable && <nav className="island-targets" aria-label="Visit an island">
+          {destinations.map((item) => {
+            const anchor = projected[item.id];
+            if (!anchor?.visible) return null;
+            return <a key={item.id} id={'island-' + item.id} className={'island-pin island-pin--' + item.id} href={href(item.id)} style={{ left: anchor.x, top: anchor.y }} aria-label={item.name + ' — enter ' + item.caption.toLowerCase()}>
+              <span className="island-pin__label"><WorldIcon name={item.icon} size={18} />{item.name}<WorldIcon name="arrow" size={14} /></span>
+              <span className="island-pin__line" aria-hidden="true" /><span className="island-pin__dot" aria-hidden="true" />
+            </a>;
+          })}
+        </nav>}
+        <div className="world-identity"><WorldIcon size={25} /><div><strong>Kunjal Mahajan</strong><span>AI &amp; Data Science Engineer</span></div></div>
+        {arrived && <>
+          <div className="world-invitation"><span>Choose an island. Follow your curiosity.</span><small>Drag to look around · Scroll to zoom</small></div>
+          <nav className="world-mobile-destinations" aria-label="Explore the portfolio">
+            {destinations.map((item) => <a key={item.id} id={unavailable ? 'island-' + item.id : undefined} href={href(item.id)}><WorldIcon name={item.icon} /><strong>{item.name}</strong><span>{item.caption}</span></a>)}
+          </nav>
+        </>}
       </>}
       {section && <>
         <a className="world-return" href={href('')}><WorldIcon name="back" size={18} />Back to world</a>
-        <span className="world-location"><WorldIcon name={destinations.find((d) => d.id === section)?.icon || 'star'} size={16} />{destinations.find((d) => d.id === section)?.caption || 'A little closer'}</span>
+        {arrived && <span className="world-location"><WorldIcon name={destination?.icon || 'star'} size={16} />{destination?.caption || 'A little closer'}</span>}
       </>}
+      {!arrived && <div className="world-travel-status" role="status" aria-live="polite"><WorldIcon name={destination?.icon || 'star'} size={18} /><span>{section ? destination?.journey || 'Finding a quiet corner…' : 'Returning to the islands…'}</span>{section && <small>Esc to return</small>}</div>}
     </section>
   );
 }

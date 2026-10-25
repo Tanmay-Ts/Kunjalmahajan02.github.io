@@ -1,6 +1,8 @@
-# Kunjal — A Little World of Curiosity
+﻿# Kunjal — A Little World of Curiosity
 
-A separate, interactive portfolio experiment based on the **Enter the Library** design.
+A separate interactive portfolio in a living, three-dimensional floating world.
+
+Visual status: the interface and sunset palette follow the approved reference. The world is a real-time 3D reconstruction; matching the original illustration's exact painterly detail remains unfinished.
 
 Repository: https://github.com/Tanmay-Ts/kunjal-floating-world
 
@@ -8,14 +10,17 @@ This repository is independent of [the original portfolio](https://kunjalmahajan
 
 ## Explore the world
 
-- **Research:** select the glass library. The camera moves toward the island, blends into its interior, and reveals a reading drawer.
-- **Projects:** enter the observatory to browse the existing projects and their case studies, including interactive demos.
+- **Research:** enter the glass library. The camera travels through the same three-dimensional scene toward its bookshelves and reading table, then reveals research topics.
+- **Projects:** fly to the observatory to browse projects and their case studies, including interactive demos.
 - **Creative:** visit the garden pavilion for dance, art, fashion, and modelling.
+- **Look around:** drag the scene to rotate the view; scroll or pinch to move closer. Select a building or its label to enter.
 - **Contact and résumé:** accessible from the persistent navigation.
-- **Return:** use Back to world, the drawer’s close control, Escape, or browser Back.
-- Research contains filters for AI & engineering and Space & physics. Each topic opens its full notes, connected topics, and related projects. These are interests and working notes; no publications or credentials are invented.
+- **Return:** use Back to world, the drawer's close control, Escape, or browser Back. Escape also cancels an ongoing camera journey.
+- Research includes AI & engineering and Space & physics filters, full topic notes, connected topics, and related projects. These are interests and working notes; no publications or credentials are invented.
 
-The environment uses illustrated backgrounds with CSS camera transforms and transitions. Animated waterfall highlights, drifting cloud banks, rising mist, and warm library motes give the scene movement. Canvas effects pause in hidden tabs and stop when Motion off or the system reduced-motion preference is enabled. Content and navigation are real HTML controls, with keyboard focus, direct hash links, and independent drawer scrolling.
+The environment is built from Three.js geometry, materials, lighting, and procedural water effects. It uses no landscape photograph, background illustration, or replacement interior image. A single WebGL renderer and world remain mounted through navigation. Buildings, plants, bridges, clouds, water, and library furnishings occupy the same space. Camera movement completes before content is mounted.
+
+The renderer uses antialiasing and a device pixel ratio up to 2, so approaching a building draws its geometry at the current viewport resolution instead of enlarging bitmap pixels. Motion off and the system reduced-motion preference stop ambient movement and make travel immediate. Rendering pauses in hidden tabs. If WebGL is unavailable, the same portfolio content stays accessible through HTML navigation. Content and navigation support keyboard focus, direct hash links, and independent drawer scrolling.
 
 ## Run locally
 
@@ -34,19 +39,22 @@ npm run check
 npm run preview
 ```
 
-The build check validates relative asset paths, required artwork and résumé files, and accidental secret patterns. Routes such as `#/research/vision` work on static hosting without rewrites.
+The build check validates relative asset paths, required portfolio assets and résumé files, and accidental secret patterns. Routes such as `#/research/vision` work on static hosting without rewrites.
 
 ## Edit content and appearance
 
-- [src/data/](./src/data/): existing profile, projects, research topics, and creative credits.
-- [IslandWorld.jsx](./src/components/IslandWorld.jsx): environment imagery and landmark links.
-- [WorldAtmosphere.jsx](./src/components/WorldAtmosphere.jsx): animated water, cloud, mist, and library light layers.
+- [src/data/](./src/data/): profile, projects, research topics, and creative credits.
+- [buildWorld.js](./src/world/buildWorld.js): procedural islands, architecture, furnishings, plants, clouds, and flowing water.
+- [WorldScene.jsx](./src/world/WorldScene.jsx): renderer, lights, perspective camera travel, world picking, and orbit controls.
+- [createAtmosphere.js](./src/world/createAtmosphere.js): procedural sunset and animated volumetric clouds.
+- [createVegetation.js](./src/world/createVegetation.js): individually modeled foliage, blossoms, grass, and hanging vines.
+- [IslandWorld.jsx](./src/components/IslandWorld.jsx): projected landmark links, travel status, and fallback navigation.
+- [App.jsx](./src/App.jsx): routing and camera-arrival gating for content.
 - [AppWindow.jsx](./src/components/AppWindow.jsx): accessible reading drawer.
 - [ResearchApp.jsx](./src/windows/ResearchApp.jsx): research categories, topic cards, and full notes.
-- [world.css](./src/styles/world.css) and [research.css](./src/styles/research.css): world and drawer appearance.
-- [public/world/](./public/world/): optimized island and library backgrounds.
+- [world.css](./src/styles/world.css) and [research.css](./src/styles/research.css): interface and drawer appearance.
 
-Portfolio content and original project components are retained from [Kunjalmahajan02.github.io](https://github.com/Kunjalmahajan02/Kunjalmahajan02.github.io). The island landscape was supplied as the design reference; the matching library interior was generated for this redesign and saved with the project. Earlier canvas-room source remains available, but is not used by the new entry point.
+Portfolio content and original project components are retained from [Kunjalmahajan02.github.io](https://github.com/Kunjalmahajan02/Kunjalmahajan02.github.io). The supplied fantasy landscape informed the palette and architectural direction only. The environment itself is implemented in code.
 
 ## Hosting
 
