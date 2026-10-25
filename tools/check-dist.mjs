@@ -30,6 +30,8 @@ for (const f of [
   'favicon.png',
   'apple-touch-icon.png',
   'og-image.png',
+  'world/sunset-world-hd.webp',
+  'world/sunset-world-hd.png',
   'resume/Kunjal_Mahajan_Resume.pdf',
   'art/creative-dance-640.webp',
   'art/creative-art-640.webp',
@@ -37,6 +39,15 @@ for (const f of [
   'art/creative-modeling-640.webp',
 ]) {
   if (!existsSync(join(dist, f))) fail(`missing asset: ${f}`);
+}
+
+// The original world needs its native 4x master to support sharp close-ups.
+const worldMaster = join(dist, 'world/sunset-world-hd.png');
+if (existsSync(worldMaster)) {
+  const png = readFileSync(worldMaster);
+  if (png.length < 24 || png.toString('hex', 0, 8) !== '89504e470d0a1a0a' || png.readUInt32BE(16) !== 5460 || png.readUInt32BE(20) !== 3072) {
+    fail('sunset world master must remain a 5460 x 3072 PNG');
+  }
 }
 
 // 4. CSS must not point fonts/images at the domain root.

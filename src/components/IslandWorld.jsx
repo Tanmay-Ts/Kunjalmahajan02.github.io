@@ -1,6 +1,6 @@
 ﻿import { useCallback, useEffect, useState } from 'react';
 import { href } from '../router.js';
-import WorldScene from '../world/WorldScene.jsx';
+import IllustratedWorld from '../world/IllustratedWorld.jsx';
 import WorldIcon from './WorldIcon.jsx';
 
 const destinations = [
@@ -22,19 +22,19 @@ export default function IslandWorld({ section, onArrival }) {
     if (event.state === 'arrived') onArrival(event.section);
   }, [target, onArrival]);
 
-  // Navigation and all portfolio content remain available without WebGL.
+  // Navigation and all portfolio content remain available if the view fails.
   useEffect(() => {
     if (unavailable) onArrival(target);
   }, [unavailable, target, onArrival]);
 
   return (
     <section className={'island-world' + (unavailable ? ' island-world--unavailable' : '')} aria-label="Kunjal’s floating world" data-destination={target || 'world'} data-camera-state={arrived ? 'arrived' : 'travelling'}>
-      <WorldScene section={section} onTravelState={onTravelState} onProjection={setProjected} onUnavailable={setUnavailable} />
+      <IllustratedWorld section={section} onTravelState={onTravelState} onProjection={setProjected} onUnavailable={setUnavailable} />
       {!section && <>
         <div className="world-intro">
           <span className="world-eyebrow"><span /> WELCOME TO MY LITTLE UNIVERSE</span>
           <h1 id="world-title" tabIndex={-1}>{unavailable ? 'Explore the portfolio' : <>A world of <br />curiosity<span>.</span></>}</h1>
-          <p>{unavailable ? 'The 3D world is unavailable in this browser. Every project, research note, and creative work is still here.' : <>Part engineer, part artist. <br />Always exploring.</>}</p>
+          <p>{unavailable ? 'The view could not load. Every project, research note, and creative work is still here.' : <>Part engineer, part artist. <br />Always exploring.</>}</p>
         </div>
         {arrived && !unavailable && <nav className="island-targets" aria-label="Visit an island">
           {destinations.map((item) => {
@@ -48,7 +48,7 @@ export default function IslandWorld({ section, onArrival }) {
         </nav>}
         <div className="world-identity"><WorldIcon size={25} /><div><strong>Kunjal Mahajan</strong><span>AI &amp; Data Science Engineer</span></div></div>
         {arrived && <>
-          <div className="world-invitation"><span>Choose an island. Follow your curiosity.</span><small>Drag to look around · Scroll to zoom</small></div>
+          <div className="world-invitation"><span>Choose an island. Follow your curiosity.</span><WorldIcon name="chevron" size={18} /></div>
           <nav className="world-mobile-destinations" aria-label="Explore the portfolio">
             {destinations.map((item) => <a key={item.id} id={unavailable ? 'island-' + item.id : undefined} href={href(item.id)}><WorldIcon name={item.icon} /><strong>{item.name}</strong><span>{item.caption}</span></a>)}
           </nav>

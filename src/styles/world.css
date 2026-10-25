@@ -1,4 +1,4 @@
-/* One persistent 3D scene, with readable HTML navigation and reading panels. */
+/* The original sunset illustration, with continuous zoom and HTML navigation. */
 :root {
   --cream: #fff9ee;
   --paper: #fffaf2;
@@ -33,6 +33,10 @@ body { background: var(--paper); overflow: hidden; }
 .motion-toggle[aria-pressed='true'] .motion-toggle__dot { background: #8d8791; }
 .world-main { position: relative; min-height: 0; isolation: isolate; overflow: hidden; }
 .island-world { position: absolute; inset: 0; overflow: hidden; background: #f1c9bb; }
+.illustrated-world { position: absolute; inset: 0; overflow: hidden; background: linear-gradient(160deg,#ffe5c5 4%,#ecbfbd 45%,#b7a2c0 80%,#8e82a6); }
+.illustrated-world__camera { position: absolute; left: 0; top: 0; }
+.illustrated-world__image { display: block; width: 100%; height: 100%; max-width: none; image-rendering: auto; user-select: none; }
+.illustrated-world::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg,#fff1d71f,transparent 38%),linear-gradient(0deg,#2b173729,transparent 22%); }
 .world-scene { position: absolute; inset: 0; width: 100%; height: 100%; overflow: hidden; }
 .world-scene canvas { display: block; width: 100%; height: 100%; max-width: none; transform: none; touch-action: manipulation; }
 .island-targets { position: absolute; inset: 0; }
@@ -69,6 +73,7 @@ body { background: var(--paper); overflow: hidden; }
 .world-travel-status small { border-left: 1px solid #d8c5a9; padding-left: 10px; color: #806b73; font-size: 10px; }
 .island-world--unavailable { background: linear-gradient(145deg,#fff3d8,#e7c9cd 62%,#c9bdd9); }
 .island-world--unavailable .world-scene { display: none; }
+.island-world--unavailable .illustrated-world { display: none; }
 .island-world--unavailable .world-intro { max-width: 540px; }
 .island-world--unavailable .world-mobile-destinations { position: absolute; top: 45%; bottom: auto; left: 50%; transform: translateX(-50%); width: min(580px,calc(100% - 32px)); display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 12px; }
 .island-world--unavailable .world-mobile-destinations a { display: grid; justify-items: center; gap: 8px; padding: 23px 8px; background: #fff9eef2; border: 1px solid #d4ba93; border-radius: 9px; color: var(--ink); text-decoration: none; }
@@ -136,6 +141,7 @@ body { background: var(--paper); overflow: hidden; }
   .island-pin__label { font-size: 16px; padding: 8px 12px; gap: 8px; }
 }
 @media (max-width: 700px) {
+  .illustrated-world__camera { -webkit-mask-image: linear-gradient(to bottom,transparent,#000 14px,#000 calc(100% - 14px),transparent); mask-image: linear-gradient(to bottom,transparent,#000 14px,#000 calc(100% - 14px),transparent); }
   :root { --header-h: 112px; --footer-h: 28px; }
   .world-header { padding: 0 18px; display: grid; grid-template-columns: 1fr auto; grid-template-rows: 62px 50px; gap: 0; }
   .world-brand { font-size: 27px; gap: 10px; }

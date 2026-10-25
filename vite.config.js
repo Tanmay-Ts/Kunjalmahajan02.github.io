@@ -11,8 +11,5 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     assetsInlineLimit: 2048,
-    rollupOptions: {
-      output: { manualChunks: { three: ['three', 'three/addons/controls/OrbitControls.js', 'three/addons/utils/BufferGeometryUtils.js'] } },
-    },
   },
 });

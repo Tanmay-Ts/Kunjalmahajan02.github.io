@@ -1,8 +1,6 @@
 ﻿# Kunjal — A Little World of Curiosity
 
-A separate interactive portfolio in a living, three-dimensional floating world.
-
-Visual status: the interface and sunset palette follow the approved reference. The world is a real-time 3D reconstruction; matching the original illustration's exact painterly detail remains unfinished.
+An interactive portfolio using the original sunset floating-island illustration, restored at **5460 × 3072** for sharper close-ups.
 
 Repository: https://github.com/Tanmay-Ts/kunjal-floating-world
 
@@ -10,17 +8,23 @@ This repository is independent of [the original portfolio](https://kunjalmahajan
 
 ## Explore the world
 
-- **Research:** enter the glass library. The camera travels through the same three-dimensional scene toward its bookshelves and reading table, then reveals research topics.
-- **Projects:** fly to the observatory to browse projects and their case studies, including interactive demos.
-- **Creative:** visit the garden pavilion for dance, art, fashion, and modelling.
-- **Look around:** drag the scene to rotate the view; scroll or pinch to move closer. Select a building or its label to enter.
-- **Contact and résumé:** accessible from the persistent navigation.
-- **Return:** use Back to world, the drawer's close control, Escape, or browser Back. Escape also cancels an ongoing camera journey.
+- Select **Research**, **Projects**, or **Creative** to zoom toward the corresponding island. Content appears after the camera finishes moving.
+- The same image remains in view throughout the transition. Research does not switch to a different interior illustration.
+- The cream header, serif typography, sunset colors, glass buildings, waterfalls, pink trees, and original island arrangement are preserved.
+- Waterfall highlights, drifting mist, and warm motes animate gently. Motion off and the system reduced-motion preference stop ambient movement and make navigation immediate.
+- Contact and résumé remain available from the header. Back to world, the close control, Escape, and browser Back return to the overview.
 - Research includes AI & engineering and Space & physics filters, full topic notes, connected topics, and related projects. These are interests and working notes; no publications or credentials are invented.
 
-The environment is built from Three.js geometry, materials, lighting, and procedural water effects. It uses no landscape photograph, background illustration, or replacement interior image. A single WebGL renderer and world remain mounted through navigation. Buildings, plants, bridges, clouds, water, and library furnishings occupy the same space. Camera movement completes before content is mounted.
+## Image quality
 
-The renderer uses antialiasing and a device pixel ratio up to 2, so approaching a building draws its geometry at the current viewport resolution instead of enlarging bitmap pixels. Motion off and the system reduced-motion preference stop ambient movement and make travel immediate. Rendering pauses in hidden tabs. If WebGL is unavailable, the same portfolio content stays accessible through HTML navigation. Content and navigation support keyboard focus, direct hash links, and independent drawer scrolling.
+The supplied 1365 × 768 PNG was upscaled four times on each axis using the general **Real-ESRGAN x4plus** model. Its composition was preserved rather than regenerated. The native output was inspected for alignment and tile seams.
+
+- [Full-resolution PNG](./public/world/sunset-world-hd.png): 5460 × 3072 master.
+- [Lossless WebP](./public/world/sunset-world-hd.webp): identical decoded pixels, used by the website.
+
+The image stays as one persistent DOM node. Its actual layout dimensions change during zoom, avoiding enlargement of an already-rasterized CSS layer. The maximum zoom is bounded by native image width divided by displayed base width and the actual device pixel ratio. Desktop zoom is additionally capped at 2.2×, portrait zoom at 3×. High-DPI screens automatically receive a lower maximum when necessary. AI upscaling improves inferred detail; it cannot recover information that was never present in the source.
+
+Tool: [Real-ESRGAN portable NCNN/Vulkan Windows release](https://github.com/xinntao/Real-ESRGAN/releases/tag/v0.2.5.0), package dated 20220424. Processing used `realesrgan-x4plus`, scale 4, tile 256, NVIDIA GPU 1, and threads `1:1:1`. The portable executable and temporary files are kept outside the tracked website in the ignored QA directory. Licenses: [NCNN implementation, MIT](https://github.com/xinntao/Real-ESRGAN-ncnn-vulkan/blob/master/LICENSE); [Real-ESRGAN, BSD-3-Clause](https://github.com/xinntao/Real-ESRGAN/blob/master/LICENSE).
 
 ## Run locally
 
@@ -39,22 +43,20 @@ npm run check
 npm run preview
 ```
 
-The build check validates relative asset paths, required portfolio assets and résumé files, and accidental secret patterns. Routes such as `#/research/vision` work on static hosting without rewrites.
+The build check validates relative paths, required portfolio artwork and résumé files, and accidental secret patterns. Direct hash routes work on static hosting without rewrites.
 
 ## Edit content and appearance
 
 - [src/data/](./src/data/): profile, projects, research topics, and creative credits.
-- [buildWorld.js](./src/world/buildWorld.js): procedural islands, architecture, furnishings, plants, clouds, and flowing water.
-- [WorldScene.jsx](./src/world/WorldScene.jsx): renderer, lights, perspective camera travel, world picking, and orbit controls.
-- [createAtmosphere.js](./src/world/createAtmosphere.js): procedural sunset and animated volumetric clouds.
-- [createVegetation.js](./src/world/createVegetation.js): individually modeled foliage, blossoms, grass, and hanging vines.
-- [IslandWorld.jsx](./src/components/IslandWorld.jsx): projected landmark links, travel status, and fallback navigation.
-- [App.jsx](./src/App.jsx): routing and camera-arrival gating for content.
+- [IllustratedWorld.jsx](./src/world/IllustratedWorld.jsx): image loading, continuous zoom, pixel-budget limits, and landmark projection.
+- [WorldAtmosphere.jsx](./src/components/WorldAtmosphere.jsx): aligned waterfall highlights, cloud mist, and light effects.
+- [IslandWorld.jsx](./src/components/IslandWorld.jsx): landmark links, travel status, and fallback navigation.
+- [App.jsx](./src/App.jsx): routing and camera-arrival gating.
 - [AppWindow.jsx](./src/components/AppWindow.jsx): accessible reading drawer.
 - [ResearchApp.jsx](./src/windows/ResearchApp.jsx): research categories, topic cards, and full notes.
 - [world.css](./src/styles/world.css) and [research.css](./src/styles/research.css): interface and drawer appearance.
 
-Portfolio content and original project components are retained from [Kunjalmahajan02.github.io](https://github.com/Kunjalmahajan02/Kunjalmahajan02.github.io). The supplied fantasy landscape informed the palette and architectural direction only. The environment itself is implemented in code.
+Portfolio content is retained from [Kunjalmahajan02.github.io](https://github.com/Kunjalmahajan02/Kunjalmahajan02.github.io). The earlier procedural 3D experiment is preserved on the `prototype/continuous-world` branch. Its source is not imported into the current entry point or bundled into this illustrated experience.
 
 ## Hosting
 
